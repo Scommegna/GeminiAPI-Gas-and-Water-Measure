@@ -17,9 +17,11 @@ const model = genAI.getGenerativeModel({
 
 export async function getMeasure(base64String: string, measureType: string) {}
 
-function base64ToImage(base64String: string, filePath: string) {
+function base64ToImage(base64String: string) {
   const base64Data = base64String.replace(/^data:image\/\w+;base64,/, "");
   const imageBuffer = Buffer.from(base64Data, "base64");
 
-  fs.writeFileSync(filePath, imageBuffer);
+  const fileOutputPath = path.dirname("/src/output");
+
+  fs.writeFileSync(fileOutputPath, imageBuffer);
 }
