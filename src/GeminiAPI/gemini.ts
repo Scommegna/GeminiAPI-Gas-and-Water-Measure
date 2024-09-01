@@ -7,21 +7,56 @@ import path from "path";
 
 import "dotenv/config";
 
-const genAI = new GoogleGenerativeAI(process.env.API_KEY || "");
+const genAI = new GoogleGenerativeAI(
+  process.env.API_KEY || "AIzaSyCqQ4zhCGZOw_KNTiGU0Veb4LShrlQgNzk"
+);
 
-const fileManager = new GoogleAIFileManager(process.env.GEMINI_API_KEY || "");
+const fileManager = new GoogleAIFileManager(
+  process.env.GEMINI_API_KEY || "AIzaSyCqQ4zhCGZOw_KNTiGU0Veb4LShrlQgNzk"
+);
 
 const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash",
 });
 
-export async function getMeasure(base64String: string, measureType: string) {}
+export async function getMeasure(
+  base64String: string,
+  measureType: string,
+  customer_code: string,
+  measure_datetime: Date
+) {
+  const fileName = `${customer_code}-${measure_datetime.toString()}-${measureType}`;
+  const filePath = path.resolve(__dirname, `../../tmp/${fileName}.png`);
 
-function base64ToImage(base64String: string) {
+  base64ToImage(base64String, filePath);
+
+  const uploadResponse = await fileManager.uploadFile(filePath, {
+    mimeType: "image/png",
+    displayName: `Medidor de ${measureType === "Water" ? "Água" : "Gás"}`,
+  });
+
+  fs.unlinkSync(filePath);
+
+  const { displayName, uri } = await fileManager.getFile(
+    uploadResponse.file.name
+  );
+
+  const responseData = await model.generateContent([
+    "Tell me about this image",
+    {
+      fileData: {
+        fileUri: uri,
+        mimeType: uploadResponse.file.mimeType,
+      },
+    },
+  ]);
+
+  return responseData.response.text();
+}
+
+function base64ToImage(base64String: string, filePath: string) {
   const base64Data = base64String.replace(/^data:image\/\w+;base64,/, "");
   const imageBuffer = Buffer.from(base64Data, "base64");
 
-  const fileOutputPath = path.dirname("/src/output");
-
-  fs.writeFileSync(fileOutputPath, imageBuffer);
+  fs.writeFileSync(filePath, imageBuffer);
 }
