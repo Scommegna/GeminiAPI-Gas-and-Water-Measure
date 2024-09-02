@@ -19,12 +19,17 @@ const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash",
 });
 
+interface MeasureReturn {
+  image_url: string;
+  measure_value: number;
+}
+
 export async function getMeasure(
   base64String: string,
   measureType: string,
   customer_code: string,
   measure_datetime: Date
-) {
+): Promise<MeasureReturn> {
   const fileName = `${customer_code}-${measure_datetime.toString()}-${measureType}`;
   const filePath = path.resolve(__dirname, `../../tmp/${fileName}.png`);
 
@@ -37,12 +42,10 @@ export async function getMeasure(
 
   fs.unlinkSync(filePath);
 
-  const { displayName, uri } = await fileManager.getFile(
-    uploadResponse.file.name
-  );
+  const { uri } = await fileManager.getFile(uploadResponse.file.name);
 
   const responseData = await model.generateContent([
-    "Tell me about this image",
+    `Give me the measurement calculated by this ${measureType} meter. (Just answer in the format "value unity")`,
     {
       fileData: {
         fileUri: uri,
@@ -51,7 +54,12 @@ export async function getMeasure(
     },
   ]);
 
-  return responseData.response.text();
+  const numberValue = Number(responseData?.response?.text().split(" ")[0]);
+
+  return {
+    image_url: uri,
+    measure_value: numberValue,
+  };
 }
 
 function base64ToImage(base64String: string, filePath: string) {

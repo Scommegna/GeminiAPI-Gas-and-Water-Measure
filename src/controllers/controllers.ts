@@ -6,14 +6,12 @@ import { getMeasure } from "../GeminiAPI/gemini";
 export const createUpload = async (req: Request, res: Response) => {
   const { image, customer_code, measure_datetime, measure_type } = req.body;
 
-  const data = await getMeasure(
+  const { image_url, measure_value } = await getMeasure(
     image,
     measure_type,
     customer_code,
     measure_datetime
   );
-
-  console.log(data);
 
   // const upload = await UploadModel.create({
   //   image,
