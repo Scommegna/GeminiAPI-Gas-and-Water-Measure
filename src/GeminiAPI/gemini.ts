@@ -20,8 +20,8 @@ const model = genAI.getGenerativeModel({
 });
 
 interface MeasureReturn {
-  image_url: string;
-  measure_value: number;
+  uri: string;
+  value: number;
 }
 
 export async function getMeasure(
@@ -54,11 +54,11 @@ export async function getMeasure(
     },
   ]);
 
-  const numberValue = Number(responseData?.response?.text().split(" ")[0]);
+  const value = Number(responseData?.response?.text().split(" ")[0]);
 
   return {
-    image_url: uri,
-    measure_value: numberValue,
+    uri,
+    value,
   };
 }
 
