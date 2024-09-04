@@ -13,6 +13,8 @@ export interface Upload extends Document {
   customer_code: string;
   measure_datetime: Date;
   measure_type: MeasureType;
+  value: number;
+  uri: string;
 }
 
 const UploadSchema = new Schema<Upload>({
@@ -20,6 +22,8 @@ const UploadSchema = new Schema<Upload>({
   customer_code: { type: String, required: true, unique: true },
   measure_datetime: { type: Date, required: true },
   measure_type: { type: String, required: true },
+  value: { type: Number, required: true },
+  uri: { type: String, required: true },
 });
 
 const UploadModel = mongoose.model<Upload>("Upload", UploadSchema);
