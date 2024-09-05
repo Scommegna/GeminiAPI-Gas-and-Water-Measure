@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import UploadModel from "../models/upload";
 
+import { hasOneMonthPassed } from "../utils/utils";
+
 import { getMeasure } from "../GeminiAPI/gemini";
 import { BadRequestError, DoubleReportError } from "../helpers/api-errors";
 
@@ -18,7 +20,7 @@ export const createUpload = async (req: Request, res: Response) => {
     measure_type,
   });
 
-  if (hasUploadedData)
+  if (!hasOneMonthPassed(hasUploadedData?.measure_datetime))
     throw new DoubleReportError(
       `There is already a measurement registered for the month ${measure_datetime.toString()} for the user ${customer_code}.`
     );
