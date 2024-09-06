@@ -22,7 +22,7 @@ export class DoubleReportError extends ApiError {
   }
 }
 
-export class MeasureNotFound extends ApiError {
+export class MeasureNotFoundError extends ApiError {
   constructor(message: string) {
     super(message, 404, "MEASURE_NOT_FOUND");
   }

@@ -4,7 +4,16 @@ import UploadModel from "../models/upload";
 import { hasOneMonthPassed } from "../utils/utils";
 
 import { getMeasure } from "../GeminiAPI/gemini";
-import { BadRequestError, DoubleReportError } from "../helpers/api-errors";
+import {
+  BadRequestError,
+  DoubleReportError,
+  MeasureNotFoundError,
+} from "../helpers/api-errors";
+
+interface PatchReqBody {
+  uuid: string;
+  value: number;
+}
 
 export const createUpload = async (req: Request, res: Response) => {
   const { image, customer_code, measure_datetime, measure_type } = req.body;
@@ -42,4 +51,30 @@ export const createUpload = async (req: Request, res: Response) => {
   });
 
   return res.status(200).json({ uri, value, _id });
+};
+
+export const patchValueById = async (
+  req: Request<PatchReqBody>,
+  res: Response
+) => {
+  const { uuid, value } = req.body;
+
+  if (!uuid || !value)
+    throw new BadRequestError(
+      "Not all parameters for the upload request were provided."
+    );
+
+  const hasUploadedData = await UploadModel.findOne({
+    _id: uuid,
+  });
+
+  if (!hasUploadedData)
+    throw new MeasureNotFoundError("No measure found for the given uuid.");
+
+  if (!hasOneMonthPassed(hasUploadedData?.measure_datetime))
+    throw new DoubleReportError("The measure was already made this month.");
+
+  await UploadModel.updateOne({ value });
+
+  return res.status(200).json({ success: true });
 };
