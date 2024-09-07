@@ -78,3 +78,5 @@ export const patchValueById = async (
 
   return res.status(200).json({ success: true });
 };
+
+export const getListOfMeasures = async (req: Request, res: Response) => {};
