@@ -5,6 +5,8 @@ import fs from "fs";
 
 import path from "path";
 
+import { MeasureReturn } from "../types/types";
+
 import "dotenv/config";
 
 const genAI = new GoogleGenerativeAI(
@@ -18,11 +20,6 @@ const fileManager = new GoogleAIFileManager(
 const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash",
 });
-
-interface MeasureReturn {
-  uri: string;
-  value: number;
-}
 
 export async function getMeasure(
   base64String: string,

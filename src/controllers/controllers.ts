@@ -3,17 +3,16 @@ import UploadModel from "../models/upload";
 
 import { hasOneMonthPassed } from "../utils/utils";
 
+import { PatchReqBody } from "../types/types";
+
+import { MeasureType } from "../types/types";
+
 import { getMeasure } from "../GeminiAPI/gemini";
 import {
   BadRequestError,
   DoubleReportError,
   MeasureNotFoundError,
 } from "../helpers/api-errors";
-
-interface PatchReqBody {
-  uuid: string;
-  value: number;
-}
 
 export const createUpload = async (req: Request, res: Response) => {
   const { image, customer_code, measure_datetime, measure_type } = req.body;
@@ -79,4 +78,9 @@ export const patchValueById = async (
   return res.status(200).json({ success: true });
 };
 
-export const getListOfMeasures = async (req: Request, res: Response) => {};
+export const getListOfMeasures = async (req: Request, res: Response) => {
+  const { customerCode } = req.params;
+  const { measureType } = req.query;
+
+  return res.status(200).send();
+};

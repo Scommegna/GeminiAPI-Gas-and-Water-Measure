@@ -1,21 +1,6 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-type Base64Image = `data:image/${
-  | "png"
-  | "jpeg"
-  | "gif"
-  | string};base64,${string}`;
-
-type MeasureType = "Water" | "Gas";
-
-export interface Upload extends Document {
-  image: Base64Image;
-  customer_code: string;
-  measure_datetime: Date;
-  measure_type: MeasureType;
-  value: number;
-  uri: string;
-}
+import { Upload } from "../types/types";
 
 const UploadSchema = new Schema<Upload>({
   image: { type: String, required: true },
