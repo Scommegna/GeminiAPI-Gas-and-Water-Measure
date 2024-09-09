@@ -5,7 +5,7 @@ import { hasOneMonthPassed } from "../utils/utils";
 
 import { PatchReqBody } from "../types/types";
 
-import { MeasureType } from "../types/types";
+import { checkMeasureType } from "../utils/utils";
 
 import { getMeasure } from "../GeminiAPI/gemini";
 import {
@@ -28,7 +28,7 @@ export const createUpload = async (req: Request, res: Response) => {
     measure_type,
   });
 
-  if (!hasOneMonthPassed(hasUploadedData?.measure_datetime))
+  if (hasUploadedData && !hasOneMonthPassed(hasUploadedData?.measure_datetime))
     throw new DoubleReportError(
       `There is already a measurement registered for the month ${measure_datetime.toString()} for the user ${customer_code}.`
     );
@@ -82,5 +82,49 @@ export const getListOfMeasures = async (req: Request, res: Response) => {
   const { customerCode } = req.params;
   const { measureType } = req.query;
 
-  return res.status(200).send();
+  if (
+    !customerCode ||
+    (measureType &&
+      typeof measureType === "string" &&
+      !checkMeasureType(measureType))
+  ) {
+    throw new BadRequestError(
+      "Customer code is wrong or measure type is not valid."
+    );
+  }
+
+  let measuresToBeFound = measureType
+    ? await UploadModel.find({
+        customer_code: customerCode,
+        measure_type: measureType,
+      })
+    : await UploadModel.find({
+        customer_code: customerCode,
+      });
+
+  if (
+    !measuresToBeFound ||
+    (measuresToBeFound && measuresToBeFound.length === 0)
+  ) {
+    throw new MeasureNotFoundError(
+      `Measure not found with the given parameters: customer_code - ${customerCode} and measure_type - ${measureType}.`
+    );
+  }
+
+  const measures = measuresToBeFound.map(
+    ({ _id, measure_datetime, measure_type, uri, value }) => {
+      return {
+        _id,
+        measure_datetime,
+        measure_type,
+        uri,
+        value,
+      };
+    }
+  );
+
+  return res.status(200).json({
+    customerCode,
+    measures,
+  });
 };
