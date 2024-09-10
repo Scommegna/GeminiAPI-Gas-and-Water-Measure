@@ -1,6 +1,6 @@
 import "dotenv/config";
 import connectDB from "./database/database";
-import express, { Request, Response } from "express";
+import express from "express";
 
 import { router as uploadRoutes } from "./routes/uploadRoutes";
 

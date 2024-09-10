@@ -9,13 +9,9 @@ import { MeasureReturn } from "../types/types";
 
 import "dotenv/config";
 
-const genAI = new GoogleGenerativeAI(
-  process.env.API_KEY || "AIzaSyCqQ4zhCGZOw_KNTiGU0Veb4LShrlQgNzk"
-);
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
-const fileManager = new GoogleAIFileManager(
-  process.env.GEMINI_API_KEY || "AIzaSyCqQ4zhCGZOw_KNTiGU0Veb4LShrlQgNzk"
-);
+const fileManager = new GoogleAIFileManager(process.env.GEMINI_API_KEY || "");
 
 const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash",
