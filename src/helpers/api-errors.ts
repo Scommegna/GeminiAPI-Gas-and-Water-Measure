@@ -1,3 +1,5 @@
+import { response } from "express";
+
 export class ApiError extends Error {
   constructor(
     message: string,
@@ -7,6 +9,12 @@ export class ApiError extends Error {
     super(message);
     this.error_code = error_code;
     this.statusCode = statusCode;
+  }
+
+  returnError() {
+    return response
+      .status(this.statusCode)
+      .json({ error_code: this.error_code, error_description: this.message });
   }
 }
 
