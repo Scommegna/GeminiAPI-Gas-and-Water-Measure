@@ -17,10 +17,14 @@ import {
 export const createUpload = async (req: Request, res: Response) => {
   const { image, customer_code, measure_datetime, measure_type } = req.body;
 
-  if (!image || !customer_code || !measure_datetime || !measure_type)
-    throw new BadRequestError(
-      "Not all parameters for the upload request were provided."
-    );
+  if (!image || !customer_code || !measure_datetime || !measure_type) {
+    const { statusCode, errorCode } = BadRequestError();
+
+    return res.status(statusCode).json({
+      errorCode,
+      error_description: "All the request arguments were not provided.",
+    });
+  }
 
   const hasUploadedData = await UploadModel.findOne({
     customer_code,
@@ -28,10 +32,17 @@ export const createUpload = async (req: Request, res: Response) => {
     measure_type,
   });
 
-  if (hasUploadedData && !hasOneMonthPassed(hasUploadedData?.measure_datetime))
-    throw new DoubleReportError(
-      `There is already a measurement registered for the month ${measure_datetime.toString()} for the user ${customer_code}.`
-    );
+  if (
+    hasUploadedData &&
+    !hasOneMonthPassed(hasUploadedData?.measure_datetime)
+  ) {
+    const { statusCode, errorCode } = DoubleReportError();
+
+    return res.status(statusCode).json({
+      errorCode,
+      error_description: `There is already a measurement registered for the month ${measure_datetime.toString()} for the user ${customer_code}.`,
+    });
+  }
 
   const { uri, value } = await getMeasure(
     image,
@@ -58,20 +69,37 @@ export const patchValueById = async (
 ) => {
   const { uuid, value } = req.body;
 
-  if (!uuid || !value)
-    throw new BadRequestError(
-      "Not all parameters for the upload request were provided."
-    );
+  if (!uuid || !value) {
+    const { statusCode, errorCode } = BadRequestError();
+
+    return res.status(statusCode).json({
+      errorCode,
+      error_description:
+        "Not all parameters for the upload request were provided.",
+    });
+  }
 
   const hasUploadedData = await UploadModel.findOne({
     _id: uuid,
   });
 
-  if (!hasUploadedData)
-    throw new MeasureNotFoundError("No measure found for the given uuid.");
+  if (!hasUploadedData) {
+    const { statusCode, errorCode } = MeasureNotFoundError();
 
-  if (!hasOneMonthPassed(hasUploadedData?.measure_datetime))
-    throw new DoubleReportError("The measure was already made this month.");
+    return res.status(statusCode).json({
+      errorCode,
+      error_description: "No measure found for the given uuid.",
+    });
+  }
+
+  if (!hasOneMonthPassed(hasUploadedData?.measure_datetime)) {
+    const { statusCode, errorCode } = DoubleReportError();
+
+    return res.status(statusCode).json({
+      errorCode,
+      error_description: "The measure was already made this month.",
+    });
+  }
 
   await UploadModel.updateOne({ value });
 
@@ -88,9 +116,12 @@ export const getListOfMeasures = async (req: Request, res: Response) => {
       typeof measureType === "string" &&
       !checkMeasureType(measureType))
   ) {
-    throw new BadRequestError(
-      "Customer code is wrong or measure type is not valid."
-    );
+    const { statusCode, errorCode } = BadRequestError();
+
+    return res.status(statusCode).json({
+      errorCode,
+      error_description: "Customer code is wrong or measure type is not valid.",
+    });
   }
 
   let measuresToBeFound = measureType
@@ -106,9 +137,14 @@ export const getListOfMeasures = async (req: Request, res: Response) => {
     !measuresToBeFound ||
     (measuresToBeFound && measuresToBeFound.length === 0)
   ) {
-    throw new MeasureNotFoundError(
-      `Measure not found with the given parameters: customer_code - ${customerCode} and measure_type - ${measureType}.`
-    );
+    const { statusCode, errorCode } = MeasureNotFoundError();
+
+    return res
+      .status(statusCode)
+      .json({
+        errorCode,
+        error_description: `Measure not found with the given parameters: customer_code - ${customerCode} and measure_type - ${measureType}.`,
+      });
   }
 
   const measures = measuresToBeFound.map(
