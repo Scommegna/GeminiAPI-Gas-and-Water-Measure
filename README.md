@@ -25,10 +25,12 @@ In the ‘Database’ section of your MongoDB account, choose a database, click 
 Create a .env file in the root folder of the application and create a value MONGO_URI, setting it equal to the generated connection string, remembering to complete its parameters. The connection string has the following format:
 
 ```
-mongodb+srv://<nome-do-usuario>:<password>@nodeexpressprojects.k3spluk.mongodb.net/<database-name>?retryWrites=true&w=majority
+mongodb://<username>:<password>@<host>:<port>/<database>?options
 ```
 
-Sendo os campos "password" a senha da sua database, "database-name" o nome da database a ser criada e o campo "nome-do-usuario" o seu nome de usuário no MongoDB, sendo esse campo gerado automaticamente.
+The “username” field is your authentication username, the “password” is your database password, the “host” is the domain name of the database to be created, the “port” is the default MongoDB port or another one, and the “database” field is the name of the database you wish to connect to.
+
+After the initial MongoDB setup, the configuration of the GeminiAPI should also be done, which will handle the reading of measurement images.
 
 Após essas configurações da aplicação e do MongoDB, está na hora de configurar o Postman.
 
