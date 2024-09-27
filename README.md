@@ -32,7 +32,7 @@ The “username” field is your authentication username, the “password” is 
 
 After the initial MongoDB setup, the configuration of the GeminiAPI should also be done, which will handle the reading of measurement images.
 
-Após essas configurações da aplicação e do MongoDB, está na hora de configurar o Postman.
+após essas configurações da aplicação e do MongoDB, está na hora de configurar o Postman.
 
 Com o aplicativo do Postman aberto e com sua conta logada, clique no canto superior esquerdo, na seção "My workspace" em import e arraste o arquivo "Vet-Franchise-Microservice.postman_collection.json".
 Após isso, todas as rotas do Postman já estarão configuradas para serem testadas.
