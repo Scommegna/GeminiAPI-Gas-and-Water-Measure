@@ -32,6 +32,12 @@ The “username” field is your authentication username, the “password” is 
 
 After the initial MongoDB setup, the configuration of the GeminiAPI should also be done, which will handle the reading of measurement images.
 
+First, obtain a key from GeminiAPI through the following link:
+
+[GeminiAPIKey](https://ai.google.dev/gemini-api/docs/api-key)
+
+Next, in the .env file, create a field named GEMINI_API_KEY and set it equal to the generated API key.
+
 Após essas configurações da aplicação e do MongoDB, está na hora de configurar o Postman.
 
 Com o aplicativo do Postman aberto e com sua conta logada, clique no canto superior esquerdo, na seção "My workspace" em import e arraste o arquivo "Vet-Franchise-Microservice.postman_collection.json".
