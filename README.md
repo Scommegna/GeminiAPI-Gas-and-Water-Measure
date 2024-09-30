@@ -36,9 +36,13 @@ First, obtain a key from GeminiAPI through the following link:
 
 [GeminiAPIKey](https://ai.google.dev/gemini-api/docs/api-key)
 
-Next, in the .env file, create a field named GEMINI_API_KEY and set it equal to the generated API key.
+Next, in the .env file, create a field named GEMINI_API_KEY and set it equal to the generated API key:
 
-Após essas configurações da aplicação e do MongoDB, está na hora de configurar o Postman.
+```
+GEMINI_API_KEY=API_KEY
+```
+
+## Routes docs
 
 Com o aplicativo do Postman aberto e com sua conta logada, clique no canto superior esquerdo, na seção "My workspace" em import e arraste o arquivo "Vet-Franchise-Microservice.postman_collection.json".
 Após isso, todas as rotas do Postman já estarão configuradas para serem testadas.
