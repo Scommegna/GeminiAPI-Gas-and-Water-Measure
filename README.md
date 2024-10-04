@@ -44,8 +44,6 @@ GEMINI_API_KEY=API_KEY
 
 ## Routes docs
 
-TODO create postman fil
-
 Com o aplicativo do Postman aberto e com sua conta logada, clique no canto superior esquerdo, na seção "My workspace" em import e arraste o arquivo "Vet-Franchise-Microservice.postman_collection.json".
 Após isso, todas as rotas do Postman já estarão configuradas para serem testadas.
 
