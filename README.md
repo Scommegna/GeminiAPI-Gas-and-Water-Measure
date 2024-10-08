@@ -44,36 +44,33 @@ GEMINI_API_KEY=API_KEY
 
 ## Routes docs
 
-Do routes docs tomorrow
+With the Postman app open and your account logged in, click on the top left corner, in the “My Workspace” section, on import and drag the Postman JSON file.
+After that, all the Postman routes will be set up for testing.
 
-Com o aplicativo do Postman aberto e com sua conta logada, clique no canto superior esquerdo, na seção "My workspace" em import e arraste o arquivo "Vet-Franchise-Microservice.postman_collection.json".
-Após isso, todas as rotas do Postman já estarão configuradas para serem testadas.
-
-Dessa forma, a aplicação está praticamente configurada. Após tudo isso, digite no terminal o seguinte comando para iniciar a aplicação:
+This way, the application is almost configured. After all this, type the following command in the terminal to start the application:
 
 ```
 npm run dev
 ```
 
-## Utilizando a aplicação
+## Using the application
 
-Após as instalações anteriores terem sido feitas, e a aplicação estar rodando após o comando "npm run dev", todas as requisições para as rotas serão feitas através do Postman, e serão explicadas a seguir.
+After the previous installations have been completed and the application is running with the command “npm run dev,” all requests to the routes will be made through Postman, and they will be explained below.
 
-### Rota GET/tutors
+### Route GET/<userId>/list
 
-A requisição para essa rota retornará um body JSON com as informações de todos os donos de pets cadastrados no banco de dados.
+The request to this route will return a JSON body containing the information of all the measurements registered by the user with the ID "userId".
 
-### Rota POST/tutor
+### Route POST/upload
 
-A requisição para essa rota deve ser feita enviando um body, em formato JSON, com os seguintes campos, com os seguintes tipos:
+The request to this route must be made by sending a body in JSON format with the following fields, each with the corresponding types:
 
 ```
 {
-    "name": string,
-    "phone": string,
-    "email": string,
-    "date_of_birth": Date,
-    "zip_code": string
+    "image": base64 string,
+    "customer_code": string,
+    "measure_datetime": string of timestamp,
+    "measure_type": string (WATER or GAS),
 }
 ```
 
