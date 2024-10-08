@@ -74,7 +74,7 @@ The request to this route must be made by sending a body in JSON format with the
 }
 ```
 
-Após o sucesso da requisição, também será gerado um campo "\_id" com um valor identificador único para o dono e um vetor para armazenamento dos seus pets.
+após o sucesso da requisição, também será gerado um campo "\_id" com um valor identificador único para o dono e um vetor para armazenamento dos seus pets.
 
 ### Rota PUT/tutor/:id
 
