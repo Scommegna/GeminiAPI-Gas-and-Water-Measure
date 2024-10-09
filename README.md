@@ -74,39 +74,9 @@ The request to this route must be made by sending a body in JSON format with the
 }
 ```
 
-após o sucesso da requisição, também será gerado um campo "\_id" com um valor identificador único para o dono e um vetor para armazenamento dos seus pets.
+After the request is successful, a field called ‘\_id’ will also be generated with a unique identifier for the measured value, a URL for the image generated from the Base64 string, and the value measured by the image.
 
-### Rota PUT/tutor/:id
-
-A requisição para essa rota atualizará os dados de um dono, cujo valor de "id" deve ser passado nos parâmetros de rota. Além disso, deve ser enviado um body, em formato JSON, com os campos que devem ser atualizados do dono, sendo possíveis campos de atualização os mesmos da rota "POST/tutor".
-
-### Rota DELETE/tutor/:id
-
-A requisição para essa rota deletará todas as informações de um dono, cujo valor de "id" deve ser passado nos parâmetros de rota.
-
-### Rota POST/pet/:tutorId
-
-A requisição para essa rota criará e armazenará no banco de dados os dados de um pet cujo relacionamento será feito pelo "id" do dono que deve ser passado nos parâmetros de rota. Além disso, deve ser enviado um body, em formato JSON, com os seguintes campos, com os seguintes tipos:
-
-```
-{
-    "name": string,
-    "species": string,
-    "carry": string,
-    "weight": number,
-    "date_of_birth": Date
-}
-```
-
-Após a requisição ser feita com sucesso, os dados do pet cadastrado serão salvos em uma tabela do banco de dados e serão gerados também dois novos campos para o pet: um campo "\_id", com um valor identificador único para o pet e um campo "owner", que contém o valor de "\_id" do dono do pet, sendo esse campo utilizado para o relacionamento de dados. Além disso, os dados do pet cadastrado serão salvos no vetor "pets" do dono.
-
-### Rota PUT/pet/:petId/tutor/:tutorId
-
-A requisição para essa rota atualizará os dados de um pet de um determinado dono (cujos valores de "id" devem ser especificados nos parâmetros de rota), sendo esses dados atualizados na tabela de pets e no vetor de pets do dono. Para que a atualização seja feita, deve ser enviado um body, em formato JSON, contendo os campos do pet a serem atualizados, sendo que esse campos devem seguir o formato especificado na rota "POST/pet/:tutorId".
-
-### Rota DELETE/pet/:petId/tutor/:tutorId
-
-A requisição para essa rota deletará todos os dados de um determinado pet de um determinado dono (cujos valores de "id" devem ser especificados nos parâmetros de rota) do banco de dados e do vetor de pets do dono.
+### Rota PATCH/confirm
 
 ## Tecnologias utilizadas
 
