@@ -84,5 +84,4 @@ After the request is successful, a field called ‘\_id’ will also be generate
 - [TypeScript](https://www.typescriptlang.org/) - Superset, para tipagem de JavaScript.
 - [MongoDB](https://www.mongodb.com/pt-br) - Banco de dados não-relacional.
 - [Mongoose](https://mongoosejs.com/) - Modelador de objetos de MongoDB para NodeJS
-- [TS-Node-Dev](https://www.npmjs.com/package/ts-node-dev) - Compilador de TypeScript para aplicações NodeJs
 - [dotenv](https://www.npmjs.com/package/dotenv) - Biblioteca de gerenciamento de variáveis ambiente.
