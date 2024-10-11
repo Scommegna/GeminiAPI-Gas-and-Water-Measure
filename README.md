@@ -78,10 +78,21 @@ After the request is successful, a field called ‘\_id’ will also be generate
 
 ### Rota PATCH/confirm
 
-## Tecnologias utilizadas
+This route must receive a JSON in the body containing the uuid and the value to be updated for the measurement. The request body should have the following format:
 
-- [Express](https://expressjs.com/pt-br/) - Framework Back-End.
-- [TypeScript](https://www.typescriptlang.org/) - Superset, para tipagem de JavaScript.
-- [MongoDB](https://www.mongodb.com/pt-br) - Banco de dados não-relacional.
-- [Mongoose](https://mongoosejs.com/) - Modelador de objetos de MongoDB para NodeJS
-- [dotenv](https://www.npmjs.com/package/dotenv) - Biblioteca de gerenciamento de variáveis ambiente.
+```
+{
+    "uuid": uuid string,
+    "value": number,
+}
+```
+
+In case of success, the value true will be returned.
+
+## Technologies used
+
+- [Express](https://expressjs.com/pt-br/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [MongoDB](https://www.mongodb.com/pt-br)
+- [Mongoose](https://mongoosejs.com/)
+- [dotenv](https://www.npmjs.com/package/dotenv)
