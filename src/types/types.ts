@@ -26,3 +26,5 @@ export interface MeasureReturn {
   uri: string;
   value: number;
 }
+
+export interface User extends Document {}

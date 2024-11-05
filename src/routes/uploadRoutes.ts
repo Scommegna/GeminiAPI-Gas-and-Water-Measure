@@ -4,7 +4,7 @@ import {
   createUpload,
   getListOfMeasures,
   patchValueById,
-} from "../controllers/controllers";
+} from "../controllers/uploadControllers";
 
 const router = express.Router();
 

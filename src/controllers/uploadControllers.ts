@@ -139,12 +139,10 @@ export const getListOfMeasures = async (req: Request, res: Response) => {
   ) {
     const { statusCode, errorCode } = MeasureNotFoundError();
 
-    return res
-      .status(statusCode)
-      .json({
-        errorCode,
-        error_description: `Measure not found with the given parameters: customer_code - ${customerCode} and measure_type - ${measureType}.`,
-      });
+    return res.status(statusCode).json({
+      errorCode,
+      error_description: `Measure not found with the given parameters: customer_code - ${customerCode} and measure_type - ${measureType}.`,
+    });
   }
 
   const measures = measuresToBeFound.map(
