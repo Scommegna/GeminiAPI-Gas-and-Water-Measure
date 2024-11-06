@@ -27,4 +27,10 @@ export interface MeasureReturn {
   value: number;
 }
 
-export interface User extends Document {}
+export interface User extends Document {
+  name: string;
+  cpf: string;
+  address: string;
+  email: string;
+  password: string;
+}

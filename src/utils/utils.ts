@@ -1,3 +1,5 @@
+import bcrypt from "bcrypt";
+
 export function hasOneMonthPassed(date: Date | undefined) {
   if (!date) return;
 
@@ -14,4 +16,21 @@ export function checkMeasureType(measure_type: string) {
     measure_type.toUpperCase() === "WATER" ||
     measure_type.toUpperCase() === "GAS"
   );
+}
+
+export async function hashPassword(password: string) {
+  const saltRounds = 10;
+
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+  return hashedPassword;
+}
+
+export async function compareHashedPassword(
+  plainPassword: string,
+  hashedPassword: string
+) {
+  const match = await bcrypt.compare(plainPassword, hashedPassword);
+
+  return match;
 }
