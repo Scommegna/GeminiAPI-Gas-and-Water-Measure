@@ -4,12 +4,12 @@ import { BadRequestError, DoubleReportError } from "../helpers/api-errors";
 
 import UserModel from "../models/user";
 
-import { hashPassword } from "../utils/utils";
+import { hashPassword, isValidEmail, isValidCPF } from "../utils/utils";
 
 export const createUser = async (req: Request, res: Response) => {
-  const { name, cpf, address, email, password } = req.body;
+  const { firstName, lastName, cpf, address, email, password } = req.body;
 
-  if (!name || !cpf || !address || !email || !password) {
+  if (!firstName || !lastName || !cpf || !address || !email || !password) {
     const { statusCode, errorCode } = BadRequestError();
 
     return res.status(statusCode).json({
@@ -29,7 +29,26 @@ export const createUser = async (req: Request, res: Response) => {
     });
   }
 
+  if (!isValidEmail(email)) {
+    const { statusCode, errorCode } = BadRequestError();
+
+    return res.status(statusCode).json({
+      errorCode,
+      error_description: "Email format is not valid.",
+    });
+  }
+
+  if (!isValidCPF(cpf)) {
+    const { statusCode, errorCode } = BadRequestError();
+
+    return res.status(statusCode).json({
+      errorCode,
+      error_description: "CPF not valid.",
+    });
+  }
+
   const hashedPassword = await hashPassword(password);
+  const name = `${firstName} ${lastName}`;
 
   await UserModel.create({
     name,

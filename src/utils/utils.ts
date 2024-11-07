@@ -1,5 +1,7 @@
 import bcrypt from "bcrypt";
 
+import "dotenv/config";
+
 export function hasOneMonthPassed(date: Date | undefined) {
   if (!date) return;
 
@@ -19,7 +21,7 @@ export function checkMeasureType(measure_type: string) {
 }
 
 export async function hashPassword(password: string) {
-  const saltRounds = 10;
+  const saltRounds = Number(process.env.SALT_ROUNDS);
 
   const hashedPassword = await bcrypt.hash(password, saltRounds);
 
@@ -33,4 +35,40 @@ export async function compareHashedPassword(
   const match = await bcrypt.compare(plainPassword, hashedPassword);
 
   return match;
+}
+
+export function isValidEmail(email: string) {
+  const emailRegex = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,6}$/;
+  return emailRegex.test(email);
+}
+
+export function isValidCPF(cpf: string) {
+  cpf = cpf.replace(/\D/g, "");
+
+  // Check if the CPF has 11 digits or is a sequence of the same digit
+  if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) {
+    return false;
+  }
+
+  // Calculate the first check digit
+  let sum = 0;
+  for (let i = 0; i < 9; i++) {
+    sum += parseInt(cpf.charAt(i)) * (10 - i);
+  }
+  let firstCheckDigit = (sum * 10) % 11;
+  if (firstCheckDigit === 10) firstCheckDigit = 0;
+
+  // Calculate the second check digit
+  sum = 0;
+  for (let i = 0; i < 10; i++) {
+    sum += parseInt(cpf.charAt(i)) * (11 - i);
+  }
+  let secondCheckDigit = (sum * 10) % 11;
+  if (secondCheckDigit === 10) secondCheckDigit = 0;
+
+  // Check if calculated check digits match the actual check digits
+  return (
+    firstCheckDigit === parseInt(cpf.charAt(9)) &&
+    secondCheckDigit === parseInt(cpf.charAt(10))
+  );
 }
