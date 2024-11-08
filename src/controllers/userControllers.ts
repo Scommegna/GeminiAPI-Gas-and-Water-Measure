@@ -62,3 +62,16 @@ export const createUser = async (req: Request, res: Response) => {
     .status(200)
     .json({ statusCode: 200, message: "User created with success." });
 };
+
+export const login = async (req: Request, res: Response) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    const { statusCode, errorCode } = BadRequestError();
+
+    return res.status(statusCode).json({
+      errorCode,
+      error_description: "Username or password were not given.",
+    });
+  }
+};
