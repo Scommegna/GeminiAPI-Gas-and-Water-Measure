@@ -1,10 +1,19 @@
 import { Request, Response } from "express";
 
-import { BadRequestError, DoubleReportError } from "../helpers/api-errors";
+import {
+  BadRequestError,
+  DoubleReportError,
+  NotFoundError,
+} from "../helpers/api-errors";
 
 import UserModel from "../models/user";
 
-import { hashPassword, isValidEmail, isValidCPF } from "../utils/utils";
+import {
+  hashPassword,
+  isValidEmail,
+  isValidCPF,
+  compareHashedPassword,
+} from "../utils/utils";
 
 export const createUser = async (req: Request, res: Response) => {
   const { firstName, lastName, cpf, address, email, password } = req.body;
@@ -64,14 +73,43 @@ export const createUser = async (req: Request, res: Response) => {
 };
 
 export const login = async (req: Request, res: Response) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
-  if (!username || !password) {
+  if (!email || !password) {
     const { statusCode, errorCode } = BadRequestError();
 
     return res.status(statusCode).json({
       errorCode,
-      error_description: "Username or password were not given.",
+      error_description: "Email or password were not given.",
     });
   }
+
+  const user = await UserModel.findOne({ email });
+
+  if (!user) {
+    const { statusCode, errorCode } = NotFoundError("user");
+
+    return res.status(statusCode).json({
+      errorCode,
+      error_description: "User not found.",
+    });
+  }
+
+  const isPasswordCorrect = await compareHashedPassword(
+    password,
+    user.password
+  );
+
+  if (!isPasswordCorrect) {
+    const { statusCode, errorCode } = BadRequestError();
+
+    return res.status(statusCode).json({
+      errorCode,
+      error_description: "Password incorrect.",
+    });
+  }
+
+  req.session.userData = { id: String(user._id), email: user.email };
+
+  return res.status(200).json({ message: "Login Successful" });
 };

@@ -1,5 +1,7 @@
 import { Document } from "mongoose";
 
+import "express-session";
+
 type Base64Image = `data:image/${
   | "png"
   | "jpeg"
@@ -33,4 +35,10 @@ export interface User extends Document {
   address: string;
   email: string;
   password: string;
+}
+
+declare module "express-session" {
+  interface SessionData {
+    userData?: { id: string; email: string };
+  }
 }

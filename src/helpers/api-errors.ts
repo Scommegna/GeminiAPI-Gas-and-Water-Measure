@@ -6,6 +6,8 @@ export function DoubleReportError() {
   return { statusCode: 409, errorCode: "DOUBLE_REPORT" };
 }
 
-export function MeasureNotFoundError() {
-  return { statusCode: 404, errorCode: "MEASURE_NOT_FOUND" };
+export function NotFoundError(itemNotFound: string) {
+  const upperCaseItem = itemNotFound.toUpperCase();
+
+  return { statusCode: 404, errorCode: `${upperCaseItem}_NOT_FOUND` };
 }

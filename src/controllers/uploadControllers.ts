@@ -11,7 +11,7 @@ import { getMeasure } from "../GeminiAPI/gemini";
 import {
   BadRequestError,
   DoubleReportError,
-  MeasureNotFoundError,
+  NotFoundError,
 } from "../helpers/api-errors";
 
 export const createUpload = async (req: Request, res: Response) => {
@@ -84,7 +84,7 @@ export const patchValueById = async (
   });
 
   if (!hasUploadedData) {
-    const { statusCode, errorCode } = MeasureNotFoundError();
+    const { statusCode, errorCode } = NotFoundError("measure");
 
     return res.status(statusCode).json({
       errorCode,
@@ -137,7 +137,7 @@ export const getListOfMeasures = async (req: Request, res: Response) => {
     !measuresToBeFound ||
     (measuresToBeFound && measuresToBeFound.length === 0)
   ) {
-    const { statusCode, errorCode } = MeasureNotFoundError();
+    const { statusCode, errorCode } = NotFoundError("measure");
 
     return res.status(statusCode).json({
       errorCode,
