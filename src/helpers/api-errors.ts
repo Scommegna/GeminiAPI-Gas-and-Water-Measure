@@ -6,6 +6,10 @@ export function DoubleReportError() {
   return { statusCode: 409, errorCode: "DOUBLE_REPORT" };
 }
 
+export function UnauthorizedError() {
+  return { statusCode: 401, errorCode: "USER_NOT_AUTHORIZED" };
+}
+
 export function NotFoundError(itemNotFound: string) {
   const upperCaseItem = itemNotFound.toUpperCase();
 
