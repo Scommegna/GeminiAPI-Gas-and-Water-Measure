@@ -113,3 +113,18 @@ export const login = async (req: Request, res: Response) => {
 
   return res.status(200).json({ message: "Login Successful" });
 };
+
+export const logout = async (req: Request, res: Response) => {
+  if (!req.session.userData) {
+    const { statusCode, errorCode } = BadRequestError();
+
+    return res.status(statusCode).json({
+      errorCode,
+      error_description: "User is not logged in.",
+    });
+  }
+
+  req.session.userData = undefined;
+
+  return res.status(200).json({ message: "Logout Successful" });
+};

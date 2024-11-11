@@ -1,5 +1,7 @@
 import express from "express";
 
+import { isAuthenticated } from "../middlewares/authMiddlewares";
+
 import {
   createUpload,
   getListOfMeasures,
@@ -8,8 +10,8 @@ import {
 
 const router = express.Router();
 
-router.post("/upload", createUpload);
+router.post("/upload", isAuthenticated, createUpload);
 router.patch("/confirm", patchValueById);
-router.get("/:customerCode/list", getListOfMeasures);
+router.get("/:customerCode/list", isAuthenticated, getListOfMeasures);
 
 export { router };
