@@ -65,6 +65,7 @@ export const createUser = async (req: Request, res: Response) => {
     address,
     email,
     password: hashedPassword,
+    type: "CLIENT",
   });
 
   return res
@@ -109,7 +110,11 @@ export const login = async (req: Request, res: Response) => {
     });
   }
 
-  req.session.userData = { id: String(user._id), email: user.email };
+  req.session.userData = {
+    id: String(user._id),
+    email: user.email,
+    typeOfClient: user.type,
+  };
 
   return res.status(200).json({ message: "Login Successful" });
 };

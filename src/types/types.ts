@@ -10,6 +10,8 @@ type Base64Image = `data:image/${
 
 export type MeasureType = "WATER" | "GAS";
 
+type UserType = "CLIENT" | "ADMIN";
+
 export interface Upload extends Document {
   image: Base64Image;
   customer_code: string;
@@ -35,10 +37,11 @@ export interface User extends Document {
   address: string;
   email: string;
   password: string;
+  type: UserType;
 }
 
 declare module "express-session" {
   interface SessionData {
-    userData?: { id: string; email: string };
+    userData?: { id: string; email: string; typeOfClient: UserType };
   }
 }
