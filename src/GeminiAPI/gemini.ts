@@ -50,7 +50,6 @@ export async function getMeasure(
   const value = Number(responseData?.response?.text().split(" ")[0]);
 
   return {
-    uri,
     value,
   };
 }

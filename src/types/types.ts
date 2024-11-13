@@ -27,7 +27,6 @@ export interface PatchReqBody {
 }
 
 export interface MeasureReturn {
-  uri: string;
   value: number;
 }
 

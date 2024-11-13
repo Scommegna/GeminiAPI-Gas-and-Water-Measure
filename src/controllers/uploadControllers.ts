@@ -44,7 +44,7 @@ export const createUpload = async (req: Request, res: Response) => {
     });
   }
 
-  const { uri, value } = await getMeasure(
+  const { value } = await getMeasure(
     image,
     measure_type,
     customer_code,
@@ -57,10 +57,9 @@ export const createUpload = async (req: Request, res: Response) => {
     measure_datetime,
     measure_type,
     value,
-    uri,
   });
 
-  return res.status(200).json({ uri, value, _id });
+  return res.status(200).json({ value, _id });
 };
 
 export const patchValueById = async (
@@ -146,12 +145,11 @@ export const getListOfMeasures = async (req: Request, res: Response) => {
   }
 
   const measures = measuresToBeFound.map(
-    ({ _id, measure_datetime, measure_type, uri, value }) => {
+    ({ _id, measure_datetime, measure_type, value }) => {
       return {
         _id,
         measure_datetime,
         measure_type,
-        uri,
         value,
       };
     }
