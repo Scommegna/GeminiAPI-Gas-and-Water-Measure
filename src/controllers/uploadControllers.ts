@@ -14,6 +14,7 @@ import {
   NotFoundError,
 } from "../helpers/api-errors";
 
+//TODO
 export const createUpload = async (req: Request, res: Response) => {
   const { image, customer_code, measure_datetime, measure_type } = req.body;
 
