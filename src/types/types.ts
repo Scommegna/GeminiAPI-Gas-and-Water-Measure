@@ -8,6 +8,8 @@ type Base64Image = `data:image/${
   | "gif"
   | string};base64,${string}`;
 
+export type ImageMimeType = "image/png" | "image/jpeg";
+
 export type MeasureType = "WATER" | "GAS";
 
 type UserType = "CLIENT" | "ADMIN";
@@ -44,3 +46,5 @@ declare module "express-session" {
     userData?: { id: string; email: string; typeOfClient: UserType };
   }
 }
+
+export type CBMulterType = (error: Error | null, value: string) => void;

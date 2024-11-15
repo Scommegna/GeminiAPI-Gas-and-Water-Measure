@@ -16,6 +16,8 @@ import {
 
 //TODO
 export const createUpload = async (req: Request, res: Response) => {
+  return res.status(200).json({ body: req.body, file: req.file });
+
   const { image, customer_code, measure_datetime, measure_type } = req.body;
 
   if (!image || !customer_code || !measure_datetime || !measure_type) {
