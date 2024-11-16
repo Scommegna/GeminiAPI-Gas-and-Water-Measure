@@ -1,11 +1,13 @@
 import { Request, Response } from "express";
 import UploadModel from "../models/upload";
 
-import { hasOneMonthPassed } from "../utils/utils";
+import {
+  hasOneMonthPassed,
+  checkMeasureType,
+  extractDate,
+} from "../utils/utils";
 
 import { PatchReqBody } from "../types/types";
-
-import { checkMeasureType } from "../utils/utils";
 
 import { getMeasure } from "../GeminiAPI/gemini";
 import {
@@ -16,11 +18,11 @@ import {
 
 //TODO
 export const createUpload = async (req: Request, res: Response) => {
-  return res.status(200).json({ body: req.body, file: req.file });
+  const { measure_type } = req.body;
+  const { file } = req;
+  const { id } = req.session;
 
-  const { image, customer_code, measure_datetime, measure_type } = req.body;
-
-  if (!image || !customer_code || !measure_datetime || !measure_type) {
+  if (!measure_type || !file) {
     const { statusCode, errorCode } = BadRequestError();
 
     return res.status(statusCode).json({
@@ -29,12 +31,18 @@ export const createUpload = async (req: Request, res: Response) => {
     });
   }
 
+  const dateString = extractDate(file.filename);
+
+  const measure_datetime =
+    typeof dateString === "string" ? new Date(dateString) : new Date();
+
   const hasUploadedData = await UploadModel.findOne({
-    customer_code,
+    customer_code: id,
     measure_datetime,
     measure_type,
   });
 
+  // Fazer a lógica de gerar fatura atual ou prévia
   if (
     hasUploadedData &&
     !hasOneMonthPassed(hasUploadedData?.measure_datetime)
@@ -43,7 +51,7 @@ export const createUpload = async (req: Request, res: Response) => {
 
     return res.status(statusCode).json({
       errorCode,
-      error_description: `There is already a measurement registered for the month ${measure_datetime.toString()} for the user ${customer_code}.`,
+      error_description: `There is already a measurement registered for the month ${measure_datetime.toString()} for the user ${id}.`,
     });
   }
 
