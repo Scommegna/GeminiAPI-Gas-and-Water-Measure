@@ -14,6 +14,15 @@ export type MeasureType = "WATER" | "GAS";
 
 type UserType = "CLIENT" | "ADMIN";
 
+export interface UserData {
+  id: string;
+  email: string;
+  typeOfClient?: UserType;
+  cpf: string;
+  name: string;
+  address: string;
+}
+
 export interface Upload extends Document {
   image: Base64Image;
   customer_code: string;
@@ -43,7 +52,7 @@ export interface User extends Document {
 
 declare module "express-session" {
   interface SessionData {
-    userData?: { id: string; email: string; typeOfClient: UserType };
+    userData?: UserData;
   }
 }
 

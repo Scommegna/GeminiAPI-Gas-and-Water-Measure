@@ -2,11 +2,16 @@ import PDFDocument from "pdfkit";
 
 import { Response } from "express";
 
+import { UserData } from "../types/types";
+
 export function createPDF(
   res: Response,
   measuredValue?: string,
-  isPreview?: boolean
+  isPreview?: boolean,
+  userData: UserData
 ) {
+  const { id, email, cpf, name, address } = userData;
+
   const doc = new PDFDocument();
 
   res.setHeader("Content-Type", "application/pdf");
@@ -23,7 +28,7 @@ export function createPDF(
     .text("Data: 2024-11-16", { align: "left" })
     .moveDown();
 
-  doc.text("Cliente: João da Silva");
+  doc.text(`Cliente: João da Silva`);
   doc.text("Endereço: Rua Exemplo, 123, Lavras/MG");
   doc.moveDown();
 

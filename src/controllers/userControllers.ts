@@ -114,6 +114,9 @@ export const login = async (req: Request, res: Response) => {
     id: String(user._id),
     email: user.email,
     typeOfClient: user.type,
+    cpf: user.cpf,
+    name: user.name,
+    address: user.address,
   };
 
   return res.status(200).json({ message: "Login Successful" });
