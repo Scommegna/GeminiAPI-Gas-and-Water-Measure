@@ -6,16 +6,21 @@ import { UserData } from "../types/types";
 
 export function createPDF(
   res: Response,
+  userData: UserData,
   measuredValue?: string,
-  isPreview?: boolean,
-  userData: UserData
+  isPreview?: boolean
 ) {
   const { id, email, cpf, name, address } = userData;
 
   const doc = new PDFDocument();
 
   res.setHeader("Content-Type", "application/pdf");
-  res.setHeader("Content-Disposition", "attachment; filename=fatura.pdf");
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename=${
+      isPreview ? "fatura" : "previa-de-fatura"
+    }${name}.pdf`
+  );
 
   doc.pipe(res);
 
