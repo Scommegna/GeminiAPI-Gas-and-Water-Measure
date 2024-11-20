@@ -4,6 +4,8 @@ import { Response } from "express";
 
 import { UserData } from "../types/types";
 
+import { formatDate } from "./utils";
+
 export function createPDF(
   res: Response,
   userData: UserData,
@@ -18,8 +20,8 @@ export function createPDF(
   res.setHeader(
     "Content-Disposition",
     `attachment; filename=${
-      isPreview ? "fatura" : "previa-de-fatura"
-    }${name}.pdf`
+      isPreview ? "fatura-" : "previa-de-fatura-"
+    }${name}-${formatDate(new Date(), "-")}.pdf`
   );
 
   doc.pipe(res);
