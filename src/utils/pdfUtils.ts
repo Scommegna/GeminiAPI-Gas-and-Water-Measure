@@ -32,7 +32,7 @@ export function createPDF(
   doc
     .fontSize(12)
     .text("Número da Fatura: 12345", { align: "left" })
-    .text("Data: 2024-11-16", { align: "left" })
+    .text(`Data: ${formatDate(new Date(), "-")}`, { align: "left" })
     .moveDown();
 
   doc.text(`Cliente: João da Silva`);
