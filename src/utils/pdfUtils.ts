@@ -4,7 +4,7 @@ import { Response } from "express";
 
 import { UserData } from "../types/types";
 
-import { formatDate } from "./utils";
+import { formatDate, generateRandomNumber } from "./utils";
 
 export function createPDF(
   res: Response,
@@ -31,11 +31,11 @@ export function createPDF(
   doc.moveDown();
   doc
     .fontSize(12)
-    .text("Número da Fatura: 12345", { align: "left" })
+    .text(`Número da Fatura: ${generateRandomNumber()}`, { align: "left" })
     .text(`Data: ${formatDate(new Date(), "-")}`, { align: "left" })
     .moveDown();
 
-  doc.text(`Cliente: João da Silva`);
+  doc.text(`Cliente: ${name}`);
   doc.text("Endereço: Rua Exemplo, 123, Lavras/MG");
   doc.moveDown();
 
