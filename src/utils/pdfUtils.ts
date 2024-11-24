@@ -1,5 +1,7 @@
 import PDFDocument from "pdfkit";
 
+import bwipjs from "bwip-js";
+
 import { Response } from "express";
 
 import { UserData } from "../types/types";
@@ -53,7 +55,13 @@ export function createPDF(
   doc.text(`Total: R$ ${getValueInMoney(measuredValue, measure_type)}`);
   doc.moveDown();
 
-  doc.text("Obrigado pela sua compra!", { align: "center" });
-
   doc.end();
+}
+
+function createBarCode(code: number) {
+  bwipjs.toBuffer({
+    bcid: "code128",
+    text: String(code),
+    scale: 3,
+  });
 }
