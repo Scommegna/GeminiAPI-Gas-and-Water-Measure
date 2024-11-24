@@ -90,3 +90,11 @@ export function extractDate(text: string) {
 export function generateRandomNumber() {
   return Math.floor(100000 + Math.random() * 900000);
 }
+
+export function getValueInMoney(measuredValue: number, measure_type: string) {
+  if (measure_type === "WATER") {
+    return (measuredValue * 1.785).toFixed(2);
+  } else if (measure_type === "GAS") {
+    return (measuredValue * 2.076).toFixed(2);
+  }
+}

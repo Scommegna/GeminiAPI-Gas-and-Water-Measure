@@ -4,13 +4,14 @@ import { Response } from "express";
 
 import { UserData } from "../types/types";
 
-import { formatDate, generateRandomNumber } from "./utils";
+import { formatDate, generateRandomNumber, getValueInMoney } from "./utils";
 
 export function createPDF(
   res: Response,
   userData: UserData,
-  measuredValue?: string,
-  isPreview?: boolean
+  measuredValue?: number,
+  isPreview?: boolean,
+  measure_type?: string
 ) {
   const { id, email, cpf, name, address } = userData;
 
@@ -36,16 +37,20 @@ export function createPDF(
     .moveDown();
 
   doc.text(`Cliente: ${name}`);
-  doc.text("Endereço: Rua Exemplo, 123, Lavras/MG");
+  doc.text(`CPF: ${cpf}`);
+  doc.text(`Email: ${email}`);
+  doc.text(`Endereço: ${address}`);
   doc.moveDown();
 
-  doc.text("Detalhes da Compra:", { underline: true });
-  doc.text("Produto 1: R$ 50,00");
-  doc.text("Produto 2: R$ 25,00");
-  doc.text("Produto 3: R$ 30,00");
+  doc.text("Detalhes da medição:", { underline: true });
+  doc.text(
+    `Valor medido no ${
+      measure_type === "WATER" ? "Hidrômetro" : "Gasômetro"
+    }: ${measuredValue} litros.`
+  );
   doc.moveDown();
 
-  doc.text("Total: R$ 105,00");
+  doc.text(`Total: R$ ${getValueInMoney(measuredValue, measure_type)}`);
   doc.moveDown();
 
   doc.text("Obrigado pela sua compra!", { align: "center" });
