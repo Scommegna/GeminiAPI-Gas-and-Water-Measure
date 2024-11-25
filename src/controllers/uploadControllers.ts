@@ -18,7 +18,7 @@ import {
   NotFoundError,
 } from "../helpers/api-errors";
 
-//TODO
+//remake file upload for gemini
 export const createUpload = async (req: Request, res: Response) => {
   const { measure_type } = req.body;
   const { file } = req;
@@ -44,9 +44,9 @@ export const createUpload = async (req: Request, res: Response) => {
     measure_type,
   });
 
-  createPDF(res);
+  // createPDF(res);
 
-  return res.status(200).send();
+  // return res.status(200).send();
 
   // Fazer a lógica de gerar fatura atual ou prévia
   if (

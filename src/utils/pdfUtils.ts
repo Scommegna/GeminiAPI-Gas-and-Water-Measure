@@ -11,11 +11,11 @@ import { formatDate, generateRandomNumber, getValueInMoney } from "./utils";
 export function createPDF(
   res: Response,
   userData: UserData,
-  measuredValue?: number,
-  isPreview?: boolean,
-  measure_type?: string
+  measuredValue: number,
+  isPreview: boolean,
+  measure_type: string
 ) {
-  const { id, email, cpf, name, address } = userData;
+  const { email, cpf, name, address } = userData;
 
   const doc = new PDFDocument();
 
@@ -55,13 +55,22 @@ export function createPDF(
   doc.text(`Total: R$ ${getValueInMoney(measuredValue, measure_type)}`);
   doc.moveDown();
 
-  doc.end();
-}
+  isPreview &&
+    bwipjs.toBuffer(
+      {
+        bcid: "code128",
+        text: String(measuredValue),
+        scale: 3,
+        height: 10,
+        includetext: true,
+        textxalign: "center",
+      },
+      (err: string | Error, png: Buffer) => {
+        doc.image(png, 50, 50, { width: 300 });
 
-function createBarCode(code: number) {
-  bwipjs.toBuffer({
-    bcid: "code128",
-    text: String(code),
-    scale: 3,
-  });
+        doc.text(`Código de barras: ${String(measuredValue)}`, 50, 120);
+      }
+    );
+
+  doc.end();
 }
