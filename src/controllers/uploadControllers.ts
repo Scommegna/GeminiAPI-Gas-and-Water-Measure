@@ -44,10 +44,6 @@ export const createUpload = async (req: Request, res: Response) => {
     measure_type,
   });
 
-  // createPDF(res);
-
-  // return res.status(200).send();
-
   // Fazer a lógica de gerar fatura atual ou prévia
   if (
     hasUploadedData &&
@@ -119,6 +115,10 @@ export const patchValueById = async (
   await UploadModel.updateOne({ value });
 
   return res.status(200).json({ success: true });
+
+  // createPDF(res);
+
+  // return res.status(200).send();
 };
 
 export const getListOfMeasures = async (req: Request, res: Response) => {
