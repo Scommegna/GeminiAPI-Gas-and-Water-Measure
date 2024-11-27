@@ -2,12 +2,6 @@ import { Document } from "mongoose";
 
 import "express-session";
 
-type Base64Image = `data:image/${
-  | "png"
-  | "jpeg"
-  | "gif"
-  | string};base64,${string}`;
-
 export type ImageMimeType = "image/png" | "image/jpeg";
 
 export type MeasureType = "WATER" | "GAS";
@@ -24,12 +18,10 @@ export interface UserData {
 }
 
 export interface Upload extends Document {
-  image: Base64Image;
-  customer_code: string;
+  userData: UserData;
   measure_datetime: Date;
   measure_type: MeasureType;
-  value: number;
-  uri: string;
+  measured_value: number;
 }
 
 export interface PatchReqBody {
