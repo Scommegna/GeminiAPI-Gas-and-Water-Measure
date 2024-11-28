@@ -44,7 +44,7 @@ export const createUpload = async (req: Request, res: Response) => {
     measure_type,
   });
 
-  // Fazer a lógica de gerar fatura atual ou prévia
+  // Fazer a lógica de gerar fatura atual ou prévia.
   if (
     hasUploadedData &&
     !hasOneMonthPassed(hasUploadedData?.measure_datetime)
