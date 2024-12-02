@@ -18,18 +18,18 @@ const model = genAI.getGenerativeModel({
 });
 
 export async function getMeasure(
-  base64String: string,
+  file: any,
   measureType: string,
   customer_code: string,
   measure_datetime: Date
 ): Promise<MeasureReturn> {
-  const fileName = `${customer_code}-${measure_datetime.toString()}-${measureType}`;
-  const filePath = path.resolve(__dirname, `../../tmp/${fileName}.png`);
-
-  base64ToImage(base64String, filePath);
+  const filePath = path.resolve(
+    __dirname,
+    `../../tmp/${file.filename}.${file.mimetype.split("/")[1]}`
+  );
 
   const uploadResponse = await fileManager.uploadFile(filePath, {
-    mimeType: "image/png",
+    mimeType: file.mimetype,
     displayName: `Medidor de ${measureType === "Water" ? "Água" : "Gás"}`,
   });
 
@@ -52,11 +52,4 @@ export async function getMeasure(
   return {
     value,
   };
-}
-
-function base64ToImage(base64String: string, filePath: string) {
-  const base64Data = base64String.replace(/^data:image\/\w+;base64,/, "");
-  const imageBuffer = Buffer.from(base64Data, "base64");
-
-  fs.writeFileSync(filePath, imageBuffer);
 }

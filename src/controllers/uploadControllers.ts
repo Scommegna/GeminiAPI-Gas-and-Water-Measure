@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import UploadModel from "../models/upload";
 
 import {
-  hasOneMonthPassed,
+  isTodayDayOfPayment,
   checkMeasureType,
   extractDate,
 } from "../utils/utils";
@@ -23,6 +23,9 @@ export const createUpload = async (req: Request, res: Response) => {
   const { measure_type } = req.body;
   const { file } = req;
   const { id } = req.session;
+  const isDayOfPayment = isTodayDayOfPayment();
+
+  return res.status(200).json({ file });
 
   if (!measure_type || !file) {
     const { statusCode, errorCode } = BadRequestError();
@@ -39,23 +42,10 @@ export const createUpload = async (req: Request, res: Response) => {
     typeof dateString === "string" ? new Date(dateString) : new Date();
 
   const hasUploadedData = await UploadModel.findOne({
-    customer_code: id,
+    userId: id,
     measure_datetime,
     measure_type,
   });
-
-  // Fazer a lógica de gerar fatura atual ou prévia
-  if (
-    hasUploadedData &&
-    !hasOneMonthPassed(hasUploadedData?.measure_datetime)
-  ) {
-    const { statusCode, errorCode } = DoubleReportError();
-
-    return res.status(statusCode).json({
-      errorCode,
-      error_description: `There is already a measurement registered for the month ${measure_datetime.toString()} for the user ${id}.`,
-    });
-  }
 
   const { value } = await getMeasure(
     image,

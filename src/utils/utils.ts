@@ -2,15 +2,9 @@ import bcrypt from "bcrypt";
 
 import "dotenv/config";
 
-export function hasOneMonthPassed(date: Date | undefined) {
-  if (!date) return;
-
+export function isTodayDayOfPayment() {
   const today = new Date();
-  const oneMonthAgo = new Date(today);
-
-  oneMonthAgo.setMonth(today.getMonth() - 1);
-
-  return date <= oneMonthAgo;
+  return today.getDate() === 7;
 }
 
 export function checkMeasureType(measure_type: string) {

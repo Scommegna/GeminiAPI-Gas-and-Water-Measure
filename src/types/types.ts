@@ -18,7 +18,7 @@ export interface UserData {
 }
 
 export interface Upload extends Document {
-  userData: UserData;
+  userId: String;
   measure_datetime: Date;
   measure_type: MeasureType;
   measured_value: number;
