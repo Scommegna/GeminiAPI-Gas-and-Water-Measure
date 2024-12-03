@@ -22,10 +22,12 @@ import {
 export const createUpload = async (req: Request, res: Response) => {
   const { measure_type } = req.body;
   const { file } = req;
-  const { id } = req.session;
+  let userData;
   const isDayOfPayment = isTodayDayOfPayment();
 
-  return res.status(200).json({ file });
+  if (req.session && req.session.userData) {
+    userData = req.session.userData;
+  }
 
   if (!measure_type || !file) {
     const { statusCode, errorCode } = BadRequestError();
@@ -42,17 +44,25 @@ export const createUpload = async (req: Request, res: Response) => {
     typeof dateString === "string" ? new Date(dateString) : new Date();
 
   const hasUploadedData = await UploadModel.findOne({
-    userId: id,
+    userId: userData && userData.id,
     measure_datetime,
     measure_type,
   });
 
-  const { value } = await getMeasure(
-    image,
-    measure_type,
-    customer_code,
-    measure_datetime
-  );
+  if (hasUploadedData && userData) {
+    createPDF(
+      res,
+      userData,
+      hasUploadedData.measured_value,
+      isDayOfPayment,
+      measure_type
+    );
+  } else if (!hasUploadedData && userData) {
+    const { value } = await getMeasure(file, measure_type);
+
+    if (value === "BAD QUALITY") {
+    }
+  }
 
   const { _id } = await UploadModel.create({
     customer_code: id,
@@ -61,7 +71,7 @@ export const createUpload = async (req: Request, res: Response) => {
     value,
   });
 
-  return res.status(200).json({ value, _id });
+  return res.status(200).send();
 };
 
 export const patchValueById = async (

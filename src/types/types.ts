@@ -30,7 +30,7 @@ export interface PatchReqBody {
 }
 
 export interface MeasureReturn {
-  value: number;
+  value: string;
 }
 
 export interface User extends Document {

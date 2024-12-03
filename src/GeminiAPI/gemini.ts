@@ -19,9 +19,7 @@ const model = genAI.getGenerativeModel({
 
 export async function getMeasure(
   file: any,
-  measureType: string,
-  customer_code: string,
-  measure_datetime: Date
+  measureType: string
 ): Promise<MeasureReturn> {
   const filePath = path.resolve(
     __dirname,
@@ -38,7 +36,7 @@ export async function getMeasure(
   const { uri } = await fileManager.getFile(uploadResponse.file.name);
 
   const responseData = await model.generateContent([
-    `Give me the measurement calculated by this ${measureType} meter. (Just answer in the format "value unity")`,
+    `Give me the measurement calculated by this ${measureType} meter. (Just answer in the format "value unity"). If you cannot recognize the image because of the quality of it, just answer "BAD QUALITY". If the image is not of a Water or Gas meter, just answer "NOT METER".`,
     {
       fileData: {
         fileUri: uri,
@@ -47,7 +45,7 @@ export async function getMeasure(
     },
   ]);
 
-  const value = Number(responseData?.response?.text().split(" ")[0]);
+  const value = responseData?.response?.text();
 
   return {
     value,
