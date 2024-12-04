@@ -21,10 +21,7 @@ export async function getMeasure(
   file: any,
   measureType: string
 ): Promise<MeasureReturn> {
-  const filePath = path.resolve(
-    __dirname,
-    `../../tmp/${file.filename}.${file.mimetype.split("/")[1]}`
-  );
+  const filePath = path.resolve(__dirname, `../../tmp/${file.filename}`);
 
   const uploadResponse = await fileManager.uploadFile(filePath, {
     mimeType: file.mimetype,
@@ -36,7 +33,7 @@ export async function getMeasure(
   const { uri } = await fileManager.getFile(uploadResponse.file.name);
 
   const responseData = await model.generateContent([
-    `Give me the measurement calculated by this ${measureType} meter. (Just answer in the format "value unity"). If you cannot recognize the image because of the quality of it, just answer "BAD QUALITY". If the image is not of a Water or Gas meter, just answer "NOT METER".`,
+    `Give me the measurement calculated by this ${measureType} meter. (Just answer in the format "value"). If you cannot recognize the image because of the quality of it, just answer "BAD QUALITY". If the image is not of a Water or Gas meter, just answer "NOT METER".`,
     {
       fileData: {
         fileUri: uri,

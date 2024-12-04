@@ -18,7 +18,7 @@ import {
   NotFoundError,
 } from "../helpers/api-errors";
 
-//remake file upload for gemini
+//Arrumar codigo de barras e o unlinkSync do arquivo quando já tiver o valor medido
 export const createUpload = async (req: Request, res: Response) => {
   const { measure_type } = req.body;
   const { file } = req;
@@ -61,15 +61,32 @@ export const createUpload = async (req: Request, res: Response) => {
     const { value } = await getMeasure(file, measure_type);
 
     if (value === "BAD QUALITY") {
-    }
-  }
+      const { statusCode, errorCode } = BadRequestError();
 
-  const { _id } = await UploadModel.create({
-    customer_code: id,
-    measure_datetime,
-    measure_type,
-    value,
-  });
+      return res.status(statusCode).json({
+        errorCode,
+        error_description: "Image with bad quality.",
+      });
+    } else if (value === "NOT METER") {
+      const { statusCode, errorCode } = BadRequestError();
+
+      return res.status(statusCode).json({
+        errorCode,
+        error_description: "Given image is not of an Water or Gas meter.",
+      });
+    }
+
+    const valueAsNumber = Number(value);
+
+    await UploadModel.create({
+      userId: userData.id,
+      measure_datetime,
+      measure_type,
+      measured_value: valueAsNumber,
+    });
+
+    createPDF(res, userData, valueAsNumber, isDayOfPayment, measure_type);
+  }
 
   return res.status(200).send();
 };
