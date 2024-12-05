@@ -18,7 +18,7 @@ import {
   NotFoundError,
 } from "../helpers/api-errors";
 
-//Arrumar codigo de barras e o unlinkSync do arquivo quando já tiver o valor medido
+//Arrumar codigo de barras e o unlinkSync do arquivo quando já tiver o valor medido.
 export const createUpload = async (req: Request, res: Response) => {
   const { measure_type } = req.body;
   const { file } = req;
