@@ -1,5 +1,7 @@
 import PDFDocument from "pdfkit";
 
+import { ImageSrc } from "../types/types";
+
 import bwipjs from "bwip-js";
 
 import { Response } from "express";
@@ -8,7 +10,7 @@ import { UserData } from "../types/types";
 
 import { formatDate, generateRandomNumber, getValueInMoney } from "./utils";
 
-export function createPDF(
+export async function createPDF(
   res: Response,
   userData: UserData,
   measuredValue: number,
@@ -55,22 +57,36 @@ export function createPDF(
   doc.text(`Total: R$ ${getValueInMoney(measuredValue, measure_type)}`);
   doc.moveDown();
 
-  isPreview &&
-    bwipjs.toBuffer(
-      {
-        bcid: "code128",
-        text: String(measuredValue),
-        scale: 3,
-        height: 10,
-        includetext: true,
-        textxalign: "center",
-      },
-      (err: string | Error, png: Buffer) => {
-        doc.image(png, 50, 50, { width: 300 });
+  try {
+    // Geração do código de barras com async/await
+    const pngBuffer = await generateBarcodeBuffer({
+      bcid: "code128",
+      text: String(measuredValue),
+      scale: 3,
+      height: 10,
+      includetext: true,
+      textxalign: "center",
+    });
 
-        doc.text(`Código de barras: ${String(measuredValue)}`, 50, 120);
-      }
-    );
+    // Adicionar o código de barras ao PDF
+    doc.image(pngBuffer as ImageSrc, 50, 50, { width: 300 });
+    doc.text(`Código de barras: ${String(measuredValue)}`, 50, 120);
+  } catch (err) {
+    console.error("Erro ao gerar código de barras:", err);
+    doc.text("Não foi possível gerar o código de barras.", 50, 50);
+  }
 
+  // Finalizar o PDF
   doc.end();
+}
+
+function generateBarcodeBuffer(options: bwipjs.RenderOptions) {
+  return new Promise((resolve, reject) => {
+    bwipjs.toBuffer(options, (err, buffer) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve(buffer);
+    });
+  });
 }

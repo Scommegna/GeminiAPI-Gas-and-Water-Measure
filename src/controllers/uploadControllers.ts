@@ -50,13 +50,15 @@ export const createUpload = async (req: Request, res: Response) => {
   });
 
   if (hasUploadedData && userData) {
-    createPDF(
+    await createPDF(
       res,
       userData,
       hasUploadedData.measured_value,
       isDayOfPayment,
       measure_type
     );
+
+    return;
   } else if (!hasUploadedData && userData) {
     const { value } = await getMeasure(file, measure_type);
 
@@ -85,10 +87,10 @@ export const createUpload = async (req: Request, res: Response) => {
       measured_value: valueAsNumber,
     });
 
-    createPDF(res, userData, valueAsNumber, isDayOfPayment, measure_type);
-  }
+    await createPDF(res, userData, valueAsNumber, isDayOfPayment, measure_type);
 
-  return res.status(200).send();
+    return;
+  }
 };
 
 export const patchValueById = async (

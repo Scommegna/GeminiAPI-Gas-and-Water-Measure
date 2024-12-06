@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
     const { measure_type } = req.body;
     const date = formatDate(new Date(), "?");
 
-    const uniqueFileName = `${id}-${date}`;
+    const uniqueFileName = `${id}-${measure_type}-${date}`;
 
     cb(null, uniqueFileName);
   },

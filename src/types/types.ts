@@ -24,6 +24,8 @@ export interface Upload extends Document {
   measured_value: number;
 }
 
+export type ImageSrc = Buffer | ArrayBuffer | string;
+
 export interface PatchReqBody {
   uuid: string;
   value: number;
