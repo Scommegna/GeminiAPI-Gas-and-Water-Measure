@@ -28,7 +28,7 @@ export async function getMeasure(
     displayName: `Medidor de ${measureType === "Water" ? "Água" : "Gás"}`,
   });
 
-  fs.unlinkSync(filePath);
+  fs.unlink(filePath, (err) => {});
 
   const { uri } = await fileManager.getFile(uploadResponse.file.name);
 

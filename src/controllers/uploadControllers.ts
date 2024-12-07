@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import UploadModel from "../models/upload";
 
+import fs from "fs";
+
+import path from "path";
+
 import {
   isTodayDayOfPayment,
   checkMeasureType,
@@ -50,6 +54,12 @@ export const createUpload = async (req: Request, res: Response) => {
   });
 
   if (hasUploadedData && userData) {
+    const filePath = path.resolve(__dirname, `../../tmp/${file.filename}`);
+
+    fs.unlink(filePath, (err) => {
+      if (err) console.log(err);
+    });
+
     await createPDF(
       res,
       userData,
