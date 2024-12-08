@@ -14,7 +14,7 @@ export async function createPDF(
   res: Response,
   userData: UserData,
   measuredValue: number,
-  isPreview: boolean,
+  isDayOfPayment: boolean,
   measure_type: string
 ) {
   const { email, cpf, name, address } = userData;
@@ -25,17 +25,19 @@ export async function createPDF(
   res.setHeader(
     "Content-Disposition",
     `attachment; filename=${
-      isPreview ? "fatura-" : "previa-de-fatura-"
+      isDayOfPayment ? "fatura-" : "previa-de-fatura-"
     }${name}-${formatDate(new Date(), "-")}.pdf`
   );
 
   doc.pipe(res);
 
-  doc.fontSize(18).text("Fatura", { align: "center" });
+  doc
+    .fontSize(32)
+    .text(isDayOfPayment ? "Fatura" : "Prévia de fatura", { align: "center" });
 
   doc.moveDown();
   doc
-    .fontSize(12)
+    .fontSize(20)
     .text(`Número da Fatura: ${generateRandomNumber()}`, { align: "left" })
     .text(`Data: ${formatDate(new Date(), "-")}`, { align: "left" })
     .moveDown();
@@ -57,22 +59,24 @@ export async function createPDF(
   doc.text(`Total: R$ ${getValueInMoney(measuredValue, measure_type)}`);
   doc.moveDown();
 
-  try {
-    // Geração do código de barras com async/await
-    const pngBuffer = await generateBarcodeBuffer({
-      bcid: "code128",
-      text: String(measuredValue),
-      scale: 10,
-      height: 2,
-      includetext: false,
-      textxalign: "center",
-    });
+  if (isDayOfPayment) {
+    try {
+      // Geração do código de barras com async/await
+      const pngBuffer = await generateBarcodeBuffer({
+        bcid: "code128",
+        text: String(measuredValue),
+        scale: 10,
+        height: 2,
+        includetext: false,
+        textxalign: "center",
+      });
 
-    // Adicionar o código de barras ao PDF
-    doc.image(pngBuffer as ImageSrc, 60, 700, { width: 500 });
-    doc.text(`Código de barras para pagamento da fatura`, 185, 685);
-  } catch (err) {
-    console.error("Erro ao gerar código de barras:", err);
+      // Adicionar o código de barras ao PDF
+      doc.image(pngBuffer as ImageSrc, 60, 700, { width: 500 });
+      doc.text(`Código de barras para pagamento da fatura`, 185, 685);
+    } catch (err) {
+      console.error("Erro ao gerar código de barras:", err);
+    }
   }
 
   // Finalizar o PDF
