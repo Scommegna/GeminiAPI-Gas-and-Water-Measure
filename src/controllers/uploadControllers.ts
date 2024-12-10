@@ -101,4 +101,10 @@ export const createUpload = async (req: Request, res: Response) => {
   }
 };
 
-export const getListOfMeasures = async (req: Request, res: Response) => {};
+export const getListOfMeasures = async (req: Request, res: Response) => {
+  let data;
+
+  if (req.session?.userData) {
+    data = req.session.userData;
+  }
+};
