@@ -14,11 +14,7 @@ import {
 import { createPDF } from "../utils/pdfUtils";
 
 import { getMeasure } from "../GeminiAPI/gemini";
-import {
-  BadRequestError,
-  DoubleReportError,
-  NotFoundError,
-} from "../helpers/api-errors";
+import { BadRequestError, NotFoundError } from "../helpers/api-errors";
 
 //Arrumar codigo de barras e o unlinkSync do arquivo quando já tiver o valor medido.
 export const createUpload = async (req: Request, res: Response) => {
@@ -107,4 +103,21 @@ export const getListOfMeasures = async (req: Request, res: Response) => {
   if (req.session?.userData) {
     data = req.session.userData;
   }
+
+  if (data) {
+    const userBillings = await UploadModel.find({ userId: data.id });
+
+    if (!userBillings) {
+      const { statusCode, errorCode } = NotFoundError("BILLINGS");
+
+      return res.status(statusCode).json({
+        errorCode,
+        error_description: "User billings were not found.",
+      });
+    }
+
+    return res.status(200).json({ userBillings });
+  }
+
+  return res.status(200).send();
 };
