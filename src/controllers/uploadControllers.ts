@@ -16,7 +16,6 @@ import { createPDF } from "../utils/pdfUtils";
 import { getMeasure } from "../GeminiAPI/gemini";
 import { BadRequestError, NotFoundError } from "../helpers/api-errors";
 
-//Arrumar codigo de barras e o unlinkSync do arquivo quando já tiver o valor medido.
 export const createUpload = async (req: Request, res: Response) => {
   const { measure_type } = req.body;
   const { file } = req;
@@ -121,3 +120,5 @@ export const getListOfMeasures = async (req: Request, res: Response) => {
 
   return res.status(200).send();
 };
+
+export const sendProofOfPayment = async (req: Request, res: Response) => {};
