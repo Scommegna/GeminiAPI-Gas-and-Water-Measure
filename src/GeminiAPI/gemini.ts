@@ -48,3 +48,5 @@ export async function getMeasure(
     value,
   };
 }
+
+export async function getProofOfPayment(file: any) {}
