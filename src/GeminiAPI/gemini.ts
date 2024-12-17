@@ -49,4 +49,6 @@ export async function getMeasure(
   };
 }
 
-export async function getProofOfPayment(file: any) {}
+export async function getProofOfPayment(file: any): Promise<boolean> {
+  return true;
+}
