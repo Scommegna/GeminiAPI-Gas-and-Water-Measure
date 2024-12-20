@@ -48,7 +48,7 @@ export async function getMeasure(
     value,
   };
 }
-//a
+//aas
 export async function getProofOfPayment(file: any): Promise<boolean> {
   const filePath = path.resolve(__dirname, `../../tmp/${file.filename}`);
 
