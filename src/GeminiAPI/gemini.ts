@@ -52,5 +52,10 @@ export async function getMeasure(
 export async function getProofOfPayment(file: any): Promise<boolean> {
   const filePath = path.resolve(__dirname, `../../tmp/${file.filename}`);
 
+  const uploadResponse = await fileManager.uploadFile(filePath, {
+    mimeType: file.mimetype,
+    displayName: `Prova de pagamento de boleto.`,
+  });
+
   return true;
 }
