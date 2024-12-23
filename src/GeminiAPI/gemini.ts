@@ -5,7 +5,7 @@ import fs from "fs";
 
 import path from "path";
 
-import { MeasureReturn } from "../types/types";
+import { MeasureReturn, ProofOfPayment } from "../types/types";
 
 import "dotenv/config";
 
@@ -49,7 +49,9 @@ export async function getMeasure(
   };
 }
 
-export async function getProofOfPayment(file: any): Promise<boolean> {
+export async function getProofOfPayment(
+  file: any
+): Promise<ProofOfPayment | null> {
   const filePath = path.resolve(__dirname, `../../tmp/${file.filename}`);
 
   const uploadResponse = await fileManager.uploadFile(filePath, {
@@ -57,5 +59,25 @@ export async function getProofOfPayment(file: any): Promise<boolean> {
     displayName: `Prova de pagamento de boleto.`,
   });
 
-  return true;
+  fs.unlink(filePath, (err) => {});
+
+  const { uri } = await fileManager.getFile(uploadResponse.file.name);
+
+  const responseData = await model.generateContent([
+    `Return to me (in JSON format to be parsed) the following values of the fields: 'Fatura', 'Valor pago', 'CPF', 'Data de pagamento'. If the is not any of these fields, return the word 'none'.`,
+    {
+      fileData: {
+        fileUri: uri,
+        mimeType: uploadResponse.file.mimeType,
+      },
+    },
+  ]);
+
+  const value = responseData?.response?.text();
+
+  if (!value || value.toLowerCase() === "none") {
+    return null;
+  }
+
+  return JSON.parse(value);
 }

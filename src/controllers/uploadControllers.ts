@@ -121,4 +121,20 @@ export const getListOfMeasures = async (req: Request, res: Response) => {
   return res.status(200).send();
 };
 
-export const sendProofOfPayment = async (req: Request, res: Response) => {};
+export const sendProofOfPayment = async (req: Request, res: Response) => {
+  const { file } = req;
+  let userData;
+
+  if (req.session && req.session.userData) {
+    userData = req.session.userData;
+  }
+
+  if (!file) {
+    const { statusCode, errorCode } = BadRequestError();
+
+    return res.status(statusCode).json({
+      errorCode,
+      error_description: "File was not provided.",
+    });
+  }
+};

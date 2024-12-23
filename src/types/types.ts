@@ -39,6 +39,13 @@ export interface User extends Document {
   type: UserType;
 }
 
+export interface ProofOfPayment {
+  billingId: string;
+  value: string;
+  userCPF: string;
+  dateOfPayment: string;
+}
+
 declare module "express-session" {
   interface SessionData {
     userData?: UserData;
