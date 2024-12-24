@@ -7,6 +7,7 @@ const UploadSchema = new Schema<Upload>({
   measure_datetime: { type: Date, required: true },
   measure_type: { type: String, required: true },
   measured_value: { type: Number, required: true },
+  status: { type: String, required: true },
 });
 
 const UploadModel = mongoose.model<Upload>("Upload", UploadSchema);

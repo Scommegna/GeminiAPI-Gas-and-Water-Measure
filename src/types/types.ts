@@ -22,6 +22,7 @@ export interface Upload extends Document {
   measure_datetime: Date;
   measure_type: MeasureType;
   measured_value: number;
+  status: "PAID" | "NOT_PAID";
 }
 
 export type ImageSrc = Buffer | ArrayBuffer | string;

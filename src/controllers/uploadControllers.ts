@@ -88,6 +88,7 @@ export const createUpload = async (req: Request, res: Response) => {
       measure_datetime,
       measure_type,
       measured_value: valueAsNumber,
+      status: "NOT_PAID",
     });
 
     await createPDF(res, userData, valueAsNumber, isDayOfPayment, measure_type);
