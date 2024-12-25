@@ -122,6 +122,7 @@ export const getListOfMeasures = async (req: Request, res: Response) => {
   return res.status(200).send();
 };
 
+//as
 export const sendProofOfPayment = async (req: Request, res: Response) => {
   const { file } = req;
   let userData;
