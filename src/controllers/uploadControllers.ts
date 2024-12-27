@@ -149,4 +149,6 @@ export const sendProofOfPayment = async (req: Request, res: Response) => {
       error_description: "Proof of payment is incorrect.",
     });
   }
+
+  return res.status(200).json({ response });
 };
