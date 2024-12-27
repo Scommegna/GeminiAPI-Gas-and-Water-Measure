@@ -13,7 +13,7 @@ import {
 
 import { createPDF } from "../utils/pdfUtils";
 
-import { getMeasure } from "../GeminiAPI/gemini";
+import { getMeasure, getProofOfPayment } from "../GeminiAPI/gemini";
 import { BadRequestError, NotFoundError } from "../helpers/api-errors";
 
 export const createUpload = async (req: Request, res: Response) => {
@@ -122,7 +122,6 @@ export const getListOfMeasures = async (req: Request, res: Response) => {
   return res.status(200).send();
 };
 
-//as
 export const sendProofOfPayment = async (req: Request, res: Response) => {
   const { file } = req;
   let userData;
@@ -137,6 +136,17 @@ export const sendProofOfPayment = async (req: Request, res: Response) => {
     return res.status(statusCode).json({
       errorCode,
       error_description: "File was not provided.",
+    });
+  }
+
+  const response = await getProofOfPayment(file);
+
+  if (!response) {
+    const { statusCode, errorCode } = BadRequestError();
+
+    return res.status(statusCode).json({
+      errorCode,
+      error_description: "Proof of payment is incorrect.",
     });
   }
 };
