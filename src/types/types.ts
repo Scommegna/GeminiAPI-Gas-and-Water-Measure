@@ -41,8 +41,8 @@ export interface User extends Document {
 }
 
 export interface ProofOfPayment {
-  billingId: string;
-  value: string;
+  billing: string;
+  paidValue: string;
   userCPF: string;
   dateOfPayment: string;
 }

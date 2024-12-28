@@ -8,6 +8,7 @@ import path from "path";
 import { MeasureReturn, ProofOfPayment } from "../types/types";
 
 import "dotenv/config";
+import { formatStringToObject } from "../utils/utils";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
@@ -64,7 +65,7 @@ export async function getProofOfPayment(
   const { uri } = await fileManager.getFile(uploadResponse.file.name);
 
   const responseData = await model.generateContent([
-    `Return to me (in text following the format {"key": value} following the rules of a string that can be parsed by JSON.parse function) the following values of the fields (the field between '' is the value to be read, and the value in () is the key for the field in the JSON): 'Fatura' (billing), 'Valor pago' (paidValue), 'CPF' (cpf), 'Data de pagamento' (paymentDate). So, if the format in the document is correct, the format of the returned text will be {"billing": value, "paidValue": value...} and so on. If the is not any of these fields, return the word 'none'.`,
+    `Return to me (in text following the format key1/value1, key2/value2,...) the following values of the fields (the field between '' is the value to be read, and the value in () is the key for the field in the text): 'Fatura' (billing), 'Valor pago' (paidValue), 'CPF' (cpf), 'Data de pagamento' (paymentDate). So, if the format in the document is correct, the format of the returned text will be billing/value, paidValue/value2,...} and so on. If the is not any of these fields, return the word 'none'.`,
     {
       fileData: {
         fileUri: uri,
@@ -79,12 +80,7 @@ export async function getProofOfPayment(
     return null;
   }
 
-  let cleanedString = value
-    .replace(/^```json\n/, "")
-    .replace(/\n```$/, "")
-    .replace(/\n```$/, "");
+  const obj = formatStringToObject(value);
 
-  console.log(cleanedString);
-
-  return cleanedString as unknown as ProofOfPayment;
+  return obj as unknown as ProofOfPayment;
 }

@@ -5,6 +5,8 @@ import fs from "fs";
 
 import path from "path";
 
+import { ObjectId } from "mongodb";
+
 import {
   isTodayDayOfPayment,
   checkMeasureType,
@@ -150,5 +152,52 @@ export const sendProofOfPayment = async (req: Request, res: Response) => {
     });
   }
 
-  return res.status(200).json({ response });
+  const billing = await UploadModel.findOne({
+    _id: new ObjectId(response.billing),
+  });
+
+  if (!billing) {
+    const { statusCode, errorCode } = NotFoundError("BILLING");
+
+    return res.status(statusCode).json({
+      errorCode,
+      error_description: "Billing not found.",
+    });
+  }
+
+  if (
+    billing.measured_value > Number(response.paidValue) ||
+    billing.status === "PAID"
+  ) {
+    const { statusCode, errorCode } = BadRequestError();
+
+    return res.status(statusCode).json({
+      errorCode,
+      error_description:
+        "The paid value of the proof of payment is less than the one of the billing.",
+    });
+  }
+
+  const billingToChangeStatus = await UploadModel.updateOne(
+    {
+      _id: new ObjectId(response.billing),
+    },
+    { status: "PAID" }
+  );
+
+  if (
+    !billingToChangeStatus ||
+    (billingToChangeStatus &&
+      (billingToChangeStatus.matchedCount === 0 ||
+        billingToChangeStatus.modifiedCount === 0))
+  ) {
+    const { statusCode, errorCode } = NotFoundError("BILLING");
+
+    return res.status(statusCode).json({
+      errorCode,
+      error_description: "Billing not found.",
+    });
+  }
+
+  return res.status(200).send("Billing status updated.");
 };

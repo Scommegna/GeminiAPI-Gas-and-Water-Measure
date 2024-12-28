@@ -92,3 +92,17 @@ export function getValueInMoney(measuredValue: number, measure_type: string) {
     return (measuredValue * 2.076).toFixed(2);
   }
 }
+
+export function formatStringToObject(inputString: string) {
+  const cleanedString = inputString.trim();
+
+  const pairs = cleanedString.split(",");
+
+  const formattedObject: { [key: string]: string } = {};
+  pairs.forEach((pair) => {
+    const [key, value] = pair.split("/");
+    formattedObject[key] = value;
+  });
+
+  return formattedObject;
+}
