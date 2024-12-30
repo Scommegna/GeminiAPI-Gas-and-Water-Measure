@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 
+import { ObjectId } from "mongodb";
+
 import {
   BadRequestError,
   DoubleReportError,
@@ -139,4 +141,24 @@ export const logout = async (req: Request, res: Response) => {
 
 export const editData = async (req: Request, res: Response) => {
   const paramsToBeEdited = req.body;
+  const userId = req.session.userData?.id;
+
+  const updateUser = await UserModel.updateOne(
+    { _id: new ObjectId(userId) },
+    { $set: paramsToBeEdited }
+  );
+
+  if (updateUser.matchedCount === 0) {
+    const { statusCode, errorCode } = NotFoundError("user");
+
+    return res.status(statusCode).json({
+      errorCode,
+      error_description: "User not found.",
+    });
+  }
+
+  res.status(200).json({
+    message: "User updated successfully",
+    updatedCount: updateUser.modifiedCount,
+  });
 };
