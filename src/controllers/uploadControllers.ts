@@ -201,3 +201,25 @@ export const sendProofOfPayment = async (req: Request, res: Response) => {
 
   return res.status(200).send("Billing status updated.");
 };
+
+export const deleteBilling = async (req: Request, res: Response) => {
+  const { billingId } = req.body;
+
+  const billingToBeDeleted = await UploadModel.deleteOne({
+    _id: new ObjectId(billingId),
+  });
+
+  if (billingToBeDeleted.deletedCount === 0) {
+    const { statusCode, errorCode } = NotFoundError("BILLING");
+
+    return res.status(statusCode).json({
+      errorCode,
+      error_description: "Billing not found.",
+    });
+  }
+
+  return res.status(200).json({
+    message: "User updated successfully",
+    updatedCount: billingToBeDeleted.deletedCount,
+  });
+};

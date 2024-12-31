@@ -1,11 +1,12 @@
 import express from "express";
 
-import { isAuthenticated } from "../middlewares/authMiddlewares";
+import { isAdmin, isAuthenticated } from "../middlewares/authMiddlewares";
 
 import { upload } from "../middlewares/multerMiddleware";
 
 import {
   createUpload,
+  deleteBilling,
   getListOfMeasures,
   sendProofOfPayment,
 } from "../controllers/uploadControllers";
@@ -20,5 +21,6 @@ router.post(
   upload.single("file"),
   sendProofOfPayment
 );
+router.delete("/deleteBilling", isAuthenticated, isAdmin, deleteBilling);
 
 export { router };
