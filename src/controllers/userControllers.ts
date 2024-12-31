@@ -162,3 +162,23 @@ export const editData = async (req: Request, res: Response) => {
     updatedCount: updateUser.modifiedCount,
   });
 };
+
+export const deleteUser = async (req: Request, res: Response) => {
+  const { userId } = req.body;
+
+  const deletedUser = await UserModel.deleteOne({ _id: new ObjectId(userId) });
+
+  if (deletedUser.deletedCount === 0) {
+    const { statusCode, errorCode } = NotFoundError("user");
+
+    return res.status(statusCode).json({
+      errorCode,
+      error_description: "User not found.",
+    });
+  }
+
+  res.status(200).json({
+    message: "User updated successfully",
+    updatedCount: deletedUser.deletedCount,
+  });
+};
