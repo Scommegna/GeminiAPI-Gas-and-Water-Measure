@@ -4,10 +4,16 @@ import express from "express";
 
 import bodyParser from "body-parser";
 
+import path from "path";
+
 import { router as uploadRoutes } from "./routes/uploadRoutes";
 import { router as userRoutes } from "./routes/userRoutes";
 
 import { sessionConfig } from "./config/sessionConfig";
+
+import swaggerUi from "swagger-ui-express";
+
+import YAML from "yamljs";
 
 const app = express();
 const port = 80;
@@ -20,6 +26,12 @@ app.use(sessionConfig);
 
 app.use("/", uploadRoutes);
 app.use("/", userRoutes);
+
+const swaggerDocument = YAML.load(
+  path.resolve(__dirname, "./swagger/swagger.yaml")
+);
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);

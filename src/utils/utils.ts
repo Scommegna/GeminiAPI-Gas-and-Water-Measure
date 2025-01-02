@@ -32,8 +32,8 @@ export async function compareHashedPassword(
 }
 
 export function isValidEmail(email: string) {
-  const emailRegex = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,6}$/;
-  return emailRegex.test(email);
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return emailRegex.test(email.trim());
 }
 
 export function isValidCPF(cpf: string) {
