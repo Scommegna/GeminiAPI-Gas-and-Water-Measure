@@ -23,6 +23,7 @@ export interface Upload extends Document {
   measure_type: MeasureType;
   measured_value: number;
   status: "PAID" | "NOT_PAID";
+  billingValue: number;
 }
 
 export type ImageSrc = Buffer | ArrayBuffer | string;
@@ -47,10 +48,23 @@ export interface ProofOfPayment {
   dateOfPayment: string;
 }
 
+export interface ReportData {
+  totalOfBillings: number;
+  quantityOfGasBillings: number;
+  quantityOfWaterBillings: number;
+  totalOfPaidBillings: number;
+  totalOfNotPaidBillings: number;
+  totalOfNotPaidWaterBillings: number;
+  totalOfNotPaidGasBillings: number;
+  totalOfPaidWaterBillings: number;
+  totalOfPaidGasBillings: number;
+  sumOfTotalPaid: number;
+  sumOfTotalNotPaid: number;
+}
+
 declare module "express-session" {
   interface SessionData {
     userData?: UserData;
   }
 }
-
 export type CBMulterType = (error: Error | null, value: string) => void;

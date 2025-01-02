@@ -11,13 +11,14 @@ import {
   isTodayDayOfPayment,
   checkMeasureType,
   extractDate,
+  getValueInMoney,
 } from "../utils/utils";
 
 import { createPDF } from "../utils/pdfUtils";
 
 import { getMeasure, getProofOfPayment } from "../GeminiAPI/gemini";
 import { BadRequestError, NotFoundError } from "../helpers/api-errors";
-import { Upload } from "../types/types";
+import { ReportData, Upload } from "../types/types";
 
 export const createUpload = async (req: Request, res: Response) => {
   const { measure_type } = req.body;
@@ -85,6 +86,7 @@ export const createUpload = async (req: Request, res: Response) => {
     }
 
     const valueAsNumber = Number(value);
+    const billingValue = getValueInMoney(valueAsNumber, measure_type);
 
     await UploadModel.create({
       userId: userData.id,
@@ -92,6 +94,7 @@ export const createUpload = async (req: Request, res: Response) => {
       measure_type,
       measured_value: valueAsNumber,
       status: "NOT_PAID",
+      billingValue,
     });
 
     await createPDF(res, userData, valueAsNumber, isDayOfPayment, measure_type);
@@ -167,7 +170,7 @@ export const sendProofOfPayment = async (req: Request, res: Response) => {
   }
 
   if (
-    billing.measured_value > Number(response.paidValue) ||
+    billing.billingValue > Number(response.paidValue) ||
     billing.status === "PAID"
   ) {
     const { statusCode, errorCode } = BadRequestError();
@@ -237,8 +240,31 @@ export const getBillingsReportData = async (req: Request, res: Response) => {
     });
   }
 
-  const billingsData = allBillings.reduce(
-    (acc: unknown, billing: unknown) => {},
+  const billingsData = allBillings.reduce<ReportData>(
+    (acc, billing) => {
+      acc.totalOfBillings += 1;
+
+      if (billing.measure_type === "GAS") acc.quantityOfGasBillings += 1;
+      if (billing.measure_type === "WATER") acc.quantityOfWaterBillings += 1;
+      if (billing.status && billing.status === "PAID") {
+        acc.totalOfPaidBillings += 1;
+
+        if (billing.measure_type === "GAS") acc.totalOfPaidGasBillings += 1;
+        if (billing.measure_type === "WATER") acc.totalOfPaidWaterBillings += 1;
+
+        if (billing.billingValue) acc.sumOfTotalPaid += billing.billingValue;
+      } else {
+        acc.totalOfNotPaidBillings += 1;
+
+        if (billing.measure_type === "GAS") acc.totalOfNotPaidGasBillings += 1;
+        if (billing.measure_type === "WATER")
+          acc.totalOfNotPaidWaterBillings += 1;
+
+        if (billing.billingValue) acc.sumOfTotalNotPaid += billing.billingValue;
+      }
+
+      return acc;
+    },
     {
       totalOfBillings: 0,
       quantityOfGasBillings: 0,
@@ -254,5 +280,5 @@ export const getBillingsReportData = async (req: Request, res: Response) => {
     }
   );
 
-  return res.status(200).json({ allBillings });
+  return res.status(200).json({ billingsData });
 };

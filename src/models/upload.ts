@@ -8,6 +8,7 @@ const UploadSchema = new Schema<Upload>({
   measure_type: { type: String, required: true },
   measured_value: { type: Number, required: true },
   status: { type: String, required: true },
+  billingValue: { type: Number, required: true },
 });
 
 const UploadModel = mongoose.model<Upload>("Upload", UploadSchema);
