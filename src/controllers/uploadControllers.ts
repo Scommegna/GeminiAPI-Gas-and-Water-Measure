@@ -17,6 +17,7 @@ import { createPDF } from "../utils/pdfUtils";
 
 import { getMeasure, getProofOfPayment } from "../GeminiAPI/gemini";
 import { BadRequestError, NotFoundError } from "../helpers/api-errors";
+import { Upload } from "../types/types";
 
 export const createUpload = async (req: Request, res: Response) => {
   const { measure_type } = req.body;
@@ -222,4 +223,36 @@ export const deleteBilling = async (req: Request, res: Response) => {
     message: "User updated successfully",
     updatedCount: billingToBeDeleted.deletedCount,
   });
+};
+
+export const getBillingsReportData = async (req: Request, res: Response) => {
+  const allBillings = await UploadModel.find();
+
+  if (!allBillings) {
+    const { statusCode, errorCode } = NotFoundError("BILLING");
+
+    return res.status(statusCode).json({
+      errorCode,
+      error_description: "Billings not found.",
+    });
+  }
+
+  const billingsData = allBillings.reduce(
+    (acc: unknown, billing: unknown) => {},
+    {
+      totalOfBillings: 0,
+      quantityOfGasBillings: 0,
+      quantityOfWaterBillings: 0,
+      totalOfPaidBillings: 0,
+      totalOfNotPaidBillings: 0,
+      totalOfNotPaidWaterBillings: 0,
+      totalOfNotPaidGasBillings: 0,
+      totalOfPaidWaterBillings: 0,
+      totalOfPaidGasBillings: 0,
+      sumOfTotalPaid: 0,
+      sumOfTotalNotPaid: 0,
+    }
+  );
+
+  return res.status(200).json({ allBillings });
 };

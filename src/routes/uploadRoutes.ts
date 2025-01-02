@@ -7,6 +7,7 @@ import { upload } from "../middlewares/multerMiddleware";
 import {
   createUpload,
   deleteBilling,
+  getBillingsReportData,
   getListOfMeasures,
   sendProofOfPayment,
 } from "../controllers/uploadControllers";
@@ -22,5 +23,11 @@ router.post(
   sendProofOfPayment
 );
 router.delete("/deleteBilling", isAuthenticated, isAdmin, deleteBilling);
+router.get(
+  "/billingsReportData",
+  isAuthenticated,
+  isAdmin,
+  getBillingsReportData
+);
 
 export { router };
