@@ -42,11 +42,6 @@ Next, in the .env file, create a field named GEMINI_API_KEY and set it equal to 
 GEMINI_API_KEY=API_KEY
 ```
 
-## Routes docs
-
-With the Postman app open and your account logged in, click on the top left corner, in the “My Workspace” section, on import and drag the Postman JSON file.
-After that, all the Postman routes will be set up for testing.
-
 This way, the application is almost configured. After all this, type the following command in the terminal to start the application:
 
 ```
@@ -55,39 +50,7 @@ npm run dev
 
 ## Using the application
 
-After the previous installations have been completed and the application is running with the command “npm run dev,” all requests to the routes will be made through Postman, and they will be explained below.
-
-### Route GET/<userId>/list
-
-The request to this route will return a JSON body containing the information of all the measurements registered by the user with the ID "userId".
-
-### Route POST/upload
-
-The request to this route must be made by sending a body in JSON format with the following fields, each with the corresponding types:
-
-```
-{
-    "image": base64 string,
-    "customer_code": string,
-    "measure_datetime": string of timestamp,
-    "measure_type": string (WATER or GAS),
-}
-```
-
-After the request is successful, a field called ‘\_id’ will also be generated with a unique identifier for the measured value, a URL for the image generated from the Base64 string, and the value measured by the image.
-
-### Rota PATCH/confirm
-
-This route must receive a JSON in the body containing the uuid and the value to be updated for the measurement. The request body should have the following format:
-
-```
-{
-    "uuid": uuid string,
-    "value": number,
-}
-```
-
-In case of success, the value true will be returned.
+After the previous installations have been completed and the application is running with the command “npm run dev,” all requests can be done in the route localhost/api-docs.
 
 ## Technologies used
 
