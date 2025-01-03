@@ -9,6 +9,8 @@ servers:
 tags:
   - name: Users
     description: Users routes
+  - name: Upload
+    description: Upload routes
 paths:
   /createAccount:
     post:
@@ -29,26 +31,330 @@ paths:
                 lastName:
                   type: string
                   description: Sobrenome do usuário.
-                  exemple: Souza
+                  example: Souza
                 cpf:
                   type: string
                   description: CPF do usuário.
-                  exemple: 77777777777
+                  example: 62992591084
                 address:
                   type: string
                   description: Endereço do usuário.
-                  exemple: Rua dos usuários, 68, Centro
+                  example: Rua dos usuários, 68, Centro
                 email:
                   type: string
                   description: Email do usuário.
-                  exemple: user@gmail.com
+                  example: user@email.com
                 password:
                   type: string
                   description: Senha do usuário.
-                  exemple: mudar123
+                  example: mudar123
       responses:
         "200":
-          description: A list of users
+          description: É retornada uma mensagem falando que o usuário foi criado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+        "400":
+          description: É retornada uma mensagem falando que nem todos os argumentos foram fornecidos. O mesmo status code é utilizado para quando o email e/ou CPF estão em formatos errados.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+        "409":
+          description: É retornada uma mensagem falando que já existe um usuário cadastrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+  /login:
+    post:
+      summary: Loga o usuário já cadastrado no site.
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: Email do usuário cadastrado.
+                  example: user@email.com
+                password:
+                  type: string
+                  description: Senha do usuário cadastrado.
+                  example: mudar123
+      responses:
+        "200":
+          description: É retornada uma mensagem falando que o usuário foi logado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+        "400":
+          description: É retornada uma mensagem falando que nem todos os argumentos foram fornecidos. O mesmo status code é utilizado para quando a senha fornecida está incorreta.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+        "404":
+          description: É retornada uma mensagem falando que para o email fornecido não há usuário cadastrado no sistema.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+  /logout:
+    post:
+      summary: Desloga o usuário já cadastrado no site.
+      tags:
+        - Users
+      responses:
+        "200":
+          description: É retornada uma mensagem falando que o usuário foi deslogado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+        "400":
+          description: É retornada uma mensagem dizendo que não há usuário para deslogar.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+        "401":
+          description: É retornada uma mensagem dizendo que o usuário não tem autorização para executar a ação caso não esteja autenticado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+  /editData:
+    patch:
+      summary: Permite o usuário mudar informações pessoais cadastradas.
+      tags:
+        - Users
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Primeiro nome do usuário.
+                  example: Lucas
+                cpf:
+                  type: string
+                  description: CPF do usuário.
+                  example: 62992591084
+                address:
+                  type: string
+                  description: Endereço do usuário.
+                  example: Rua dos usuários, 68, Centro
+                email:
+                  type: string
+                  description: Email do usuário.
+                  example: user@email.com
+                password:
+                  type: string
+                  description: Senha do usuário.
+                  example: mudar123
+      responses:
+        "200":
+          description: É retornada uma mensagem dizendo que os dados foram atualizados com sucesso e um contador que condiz com a quantidade de dados alterados.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+                  updatedCount:
+                    type: number
+        "404":
+          description: É retornada uma mensagem dizendo que o usuário não foi encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+        "401":
+          description: É retornada uma mensagem dizendo que o usuário não tem autorização para executar a ação caso não esteja autenticado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+  /deleteUser:
+    delete:
+      summary: Permite o usuário administrador deletar um usuário.
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  description: ID do usuário cadastrado.
+                  example: 6777e771841e47e686507938
+      responses:
+        "200":
+          description: É retornada uma mensagem dizendo que o usuário foi deletado com sucesso e quantos usuários foram deletados.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+                  updatedCount:
+                    type: number
+        "404":
+          description: É retornada uma mensagem dizendo que o usuário não foi encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+        "401":
+          description: É retornada uma mensagem dizendo que o usuário não tem autorização para executar a ação caso não esteja autenticado ou então caso o usuário logado não seja administrador.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+  #Upload routes
+  /upload:
+    post:
+      summary: Gera uma fatura a partir de uma imagem de medidor de gás ou água.
+      tags:
+        - Upload
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Imagem do medidor.
+                measure_type:
+                  type: string
+                  description: Tipo de medidor (WATER ou GAS).
+                  example: WATER
+      responses:
+        "200":
+          description: É retornado o PDF com a Prévia ou a fatura final.
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        "400":
+          description: É retornada uma mensagem falando que nem todos os argumentos foram fornecidos. O mesmo status code é utilizado para quando o tipo de medidor tem um valor sem ser "GAS" ou "WATER e também para os casos da imagem não ser de um medidor de gás ou água ou caso a imagem esteja com a qualidade muito ruim.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+        "401":
+          description: É retornada uma mensagem indicando que o usuário não tem permissão para executar a ação caso não esteja logado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+
+  /list:
+    get:
+      summary: Permite o usuário obter as informações de todas as suas faturas.
+      tags:
+        - Upload
+      responses:
+        "200":
+          description: É retornado um array contendo todos os objetos de faturas.
           content:
             application/json:
               schema:
@@ -56,33 +362,248 @@ paths:
                 items:
                   type: object
                   properties:
-                    id:
+                    _id:
                       type: string
-                    name:
+                      description: ID da fatura.
+                      example: 67231jdnasdb
+                    userId:
                       type: string
-  /users/{id}:
-    get:
-      summary: Get user by ID
-      tags:
-        - Users
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The user ID
-          schema:
-            type: string
-      responses:
-        "200":
-          description: The user data
+                      description: ID do usuário.
+                      example: 67231jdnasdb
+                    measure_datetime:
+                      type: string
+                      description: Data da medição.
+                      example: 2025-01-03T00:00:00.000Z
+                    measure_type:
+                      type: string
+                      description: Tipo de medida (GAS ou WATER).
+                      example: GAS
+                    measured_value:
+                      type: number
+                      description: Valor medido na imagem.
+                      example: 200
+                    status:
+                      type: string
+                      description: Status de pagamento (PAID ou NOT_PAID).
+                      example: NOT_PAID
+                    billingValue:
+                      type: number
+                      description: Valor da fatura.
+                      example: 123.23
+        "404":
+          description: É retornada uma mensagem dizendo que nenhuma fatura foi encontrada.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  id:
+                  statusCode:
+                    type: number
+                  message:
                     type: string
-                  name:
+        "401":
+          description: É retornada uma mensagem dizendo que o usuário não tem autorização para executar a ação caso não esteja autenticado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+
+  /proof:
+    post:
+      summary: Muda o status de uma fatura para pago caso o comprovante esteja de acordo.
+      tags:
+        - Upload
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Imagem do comprovante de pagamento.
+      responses:
+        "200":
+          description: É retornada uma mensagem de sucesso e a quantidade de faturas com status modificado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+        "400":
+          description: É retornada uma mensagem falando que nem todos os argumentos foram fornecidos. O mesmo status code é utilizado para quando o comprovante está em formato errado ou então o valor pago do comprovante é menor que o da fatura.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+        "401":
+          description: É retornada uma mensagem indicando que o usuário não tem permissão para executar a ação caso não esteja logado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
                     type: string
         "404":
-          description: User not found
+          description: É retornada uma mensagem indicando que a fatura não foi encontrada.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+  /deleteBilling:
+    delete:
+      summary: Permite o usuário administrador deletar uma fatura.
+      tags:
+        - Upload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                billingId:
+                  type: string
+                  description: ID de uma fatura cadastrada.
+                  example: 66def07ca138861b38d28de8
+      responses:
+        "200":
+          description: É retornada uma mensagem dizendo que a fatura foi deletada com sucesso e quantas faturas foram deletadas.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+                  updatedCount:
+                    type: number
+        "404":
+          description: É retornada uma mensagem dizendo que a fatura não foi encontrada.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+        "401":
+          description: É retornada uma mensagem dizendo que o usuário não tem autorização para executar a ação caso não esteja autenticado ou então caso o usuário logado não seja administrador.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+
+  /billingsReportData:
+    get:
+      summary: Permite o usuário administrador receber dados de relatório do sistema.
+      tags:
+        - Upload
+      responses:
+        "200":
+          description: É retornado um objeto contendo todos os dados necessários para relatórios.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalOfBillings:
+                    type: number
+                    description: Total de faturas.
+                    example: 30
+                  quantityOfGasBillings:
+                    type: number
+                    description: Total de faturas de gás.
+                    example: 4
+                  quantityOfWaterBillings:
+                    type: number
+                    description: Total de faturas de água.
+                    example: 26
+                  totalOfPaidBillings:
+                    type: number
+                    description: Total de faturas pagas.
+                    example: 20
+                  totalOfNotPaidBillings:
+                    type: number
+                    description: Total de faturas não pagas.
+                    example: 10
+                  totalOfNotPaidWaterBillings:
+                    type: number
+                    description: Total de faturas de água não pagas.
+                    example: 8
+                  totalOfNotPaidGasBillings:
+                    type: number
+                    description: Total de faturas de gás não pagas.
+                    example: 2
+                  totalOfPaidWaterBillings:
+                    type: number
+                    description: Total de faturas de água pagas.
+                    example: 18
+                  totalOfPaidGasBillings:
+                    type: number
+                    description: Total de faturas de gás pagas.
+                    example: 2
+                  sumOfTotalPaid:
+                    type: number
+                    description: Soma do valor de todas as faturas pagas.
+                    example: 3000.23
+                  sumOfTotalNotPaid:
+                    type: number
+                    description: Soma do total de faturas não pagas.
+                    example: 189.34
+
+        "404":
+          description: É retornada uma mensagem dizendo que nenhuma fatura foi encontrada.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+        "401":
+          description: É retornada uma mensagem dizendo que o usuário não tem autorização para executar a ação caso não esteja autenticado ou então caso o usuário logado não seja administrador.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string

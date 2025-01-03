@@ -18,7 +18,7 @@ import { createPDF } from "../utils/pdfUtils";
 
 import { getMeasure, getProofOfPayment } from "../GeminiAPI/gemini";
 import { BadRequestError, NotFoundError } from "../helpers/api-errors";
-import { ReportData, Upload } from "../types/types";
+import { ReportData } from "../types/types";
 
 export const createUpload = async (req: Request, res: Response) => {
   const { measure_type } = req.body;
@@ -30,7 +30,11 @@ export const createUpload = async (req: Request, res: Response) => {
     userData = req.session.userData;
   }
 
-  if (!measure_type || !file) {
+  if (
+    !measure_type ||
+    !file ||
+    (measure_type && !checkMeasureType(measure_type))
+  ) {
     const { statusCode, errorCode } = BadRequestError();
 
     return res.status(statusCode).json({

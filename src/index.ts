@@ -17,6 +17,7 @@ import YAML from "yamljs";
 
 const app = express();
 const port = 80;
+const swaggerFilePath = path.resolve(__dirname, "./swagger/swagger.yaml");
 
 connectDB();
 
@@ -27,9 +28,7 @@ app.use(sessionConfig);
 app.use("/", uploadRoutes);
 app.use("/", userRoutes);
 
-const swaggerDocument = YAML.load(
-  path.resolve(__dirname, "./swagger/swagger.yaml")
-);
+const swaggerDocument = YAML.load(swaggerFilePath);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
