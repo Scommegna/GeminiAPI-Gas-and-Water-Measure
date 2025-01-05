@@ -14,7 +14,7 @@ import {
   getValueInMoney,
 } from "../utils/utils";
 
-import { createPDF } from "../utils/pdfUtils";
+import { createPDF, createReportPDF } from "../utils/pdfUtils";
 
 import { getMeasure, getProofOfPayment } from "../GeminiAPI/gemini";
 import { BadRequestError, NotFoundError } from "../helpers/api-errors";
@@ -284,5 +284,7 @@ export const getBillingsReportData = async (req: Request, res: Response) => {
     }
   );
 
-  return res.status(200).json({ billingsData });
+  await createReportPDF(res, billingsData);
+
+  return;
 };

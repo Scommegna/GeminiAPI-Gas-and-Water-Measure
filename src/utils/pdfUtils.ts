@@ -1,6 +1,6 @@
 import PDFDocument from "pdfkit";
 
-import { ImageSrc } from "../types/types";
+import { ImageSrc, ReportData } from "../types/types";
 
 import bwipjs from "bwip-js";
 
@@ -92,4 +92,78 @@ function generateBarcodeBuffer(options: bwipjs.RenderOptions) {
       resolve(buffer);
     });
   });
+}
+
+export async function createReportPDF(res: Response, reportData: ReportData) {
+  const {
+    totalOfBillings,
+    quantityOfGasBillings,
+    quantityOfWaterBillings,
+    totalOfPaidBillings,
+    totalOfNotPaidBillings,
+    totalOfNotPaidWaterBillings,
+    totalOfNotPaidGasBillings,
+    totalOfPaidWaterBillings,
+    totalOfPaidGasBillings,
+    sumOfTotalPaid,
+    sumOfTotalNotPaid,
+  } = reportData;
+
+  const doc = new PDFDocument({
+    margins: { top: 50, left: 50, right: 50, bottom: 50 },
+  });
+
+  res.setHeader("Content-Type", "application/pdf");
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename=Relatorio-${formatDate(new Date(), "-")}.pdf`
+  );
+
+  doc.pipe(res);
+
+  doc
+    .fontSize(24)
+    .font("Helvetica-Bold")
+    .text("Relatório SmartHydroGas", { align: "center" })
+    .moveDown(2);
+
+  doc
+    .fontSize(16)
+    .font("Helvetica")
+    .text(`Data do Relatório: ${formatDate(new Date(), "-")}`)
+    .moveDown();
+
+  doc
+    .fontSize(14)
+    .font("Helvetica-Bold")
+    .text("Estatísticas do Relatório:")
+    .moveDown(0.5);
+
+  doc
+    .fontSize(12)
+    .font("Helvetica")
+    .list([
+      `Total de Faturas: ${totalOfBillings}`,
+      `Faturas de Gás: ${quantityOfGasBillings}`,
+      `Faturas de Água: ${quantityOfWaterBillings}`,
+      `Faturas Pagas: ${totalOfPaidBillings}`,
+      `Faturas Não Pagas: ${totalOfNotPaidBillings}`,
+      `Faturas Não Pagas (Água): ${totalOfNotPaidWaterBillings}`,
+      `Faturas Não Pagas (Gás): ${totalOfNotPaidGasBillings}`,
+      `Faturas Pagas (Água): ${totalOfPaidWaterBillings}`,
+      `Faturas Pagas (Gás): ${totalOfPaidGasBillings}`,
+      `Valor Total Pago: R$ ${sumOfTotalPaid}`,
+      `Valor Total Não Pago: R$ ${sumOfTotalNotPaid}`,
+    ])
+    .moveDown(2);
+
+  doc
+    .fontSize(10)
+    .font("Helvetica-Oblique")
+    .text(
+      "Este relatório foi gerado automaticamente pelo sistema SmartHydroGas.",
+      { align: "center", lineGap: 10 }
+    );
+
+  doc.end();
 }

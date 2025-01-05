@@ -529,62 +529,17 @@ paths:
 
   /billingsReportData:
     get:
-      summary: Permite o usuário administrador receber dados de relatório do sistema.
+      summary: Permite o usuário administrador receber um relatório do sistema em PDF.
       tags:
         - Upload
       responses:
         "200":
-          description: É retornado um objeto contendo todos os dados necessários para relatórios.
+          description: É retornado um PDF contendo todos os dados necessários para relatórios.
           content:
-            application/json:
+            application/pdf:
               schema:
-                type: object
-                properties:
-                  totalOfBillings:
-                    type: number
-                    description: Total de faturas.
-                    example: 30
-                  quantityOfGasBillings:
-                    type: number
-                    description: Total de faturas de gás.
-                    example: 4
-                  quantityOfWaterBillings:
-                    type: number
-                    description: Total de faturas de água.
-                    example: 26
-                  totalOfPaidBillings:
-                    type: number
-                    description: Total de faturas pagas.
-                    example: 20
-                  totalOfNotPaidBillings:
-                    type: number
-                    description: Total de faturas não pagas.
-                    example: 10
-                  totalOfNotPaidWaterBillings:
-                    type: number
-                    description: Total de faturas de água não pagas.
-                    example: 8
-                  totalOfNotPaidGasBillings:
-                    type: number
-                    description: Total de faturas de gás não pagas.
-                    example: 2
-                  totalOfPaidWaterBillings:
-                    type: number
-                    description: Total de faturas de água pagas.
-                    example: 18
-                  totalOfPaidGasBillings:
-                    type: number
-                    description: Total de faturas de gás pagas.
-                    example: 2
-                  sumOfTotalPaid:
-                    type: number
-                    description: Soma do valor de todas as faturas pagas.
-                    example: 3000.23
-                  sumOfTotalNotPaid:
-                    type: number
-                    description: Soma do total de faturas não pagas.
-                    example: 189.34
-
+                type: string
+                format: binary
         "404":
           description: É retornada uma mensagem dizendo que nenhuma fatura foi encontrada.
           content:
